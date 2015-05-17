@@ -9,11 +9,15 @@ package com.dreamscape.dataengine.domain.dao;
 import com.dreamscape.dataengine.domain.Prospect;
 import com.dreamscape.dataengine.domain.managers.FinvizDomainManager;
 import java.io.IOException;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  *
@@ -51,5 +55,21 @@ public class ProspectDAOTest {
            ProspectDAO dao = new ProspectDAOHibernateImpl();
            dao.create(prospect);
        }
+    }
+    @Test
+    public void canConvertCurrentDateToDateTime()
+    {
+        String dateTime = DateTime.now().toString();
+        // Format for input
+        
+        DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZZ");
+        // Parsing the date
+        
+        DateTime jodatime = dtf.parseDateTime(dateTime);
+        // Format for output
+        
+        DateTimeFormatter dtfOut = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+            
+        System.out.println(dtfOut.print(jodatime));
     }
 }

@@ -40,7 +40,7 @@ public class FinvizDomainManagerTest {
     public void tearDown() {
     }
 
-    @Test
+    @Ignore
     public void generateRandomProspectsTest() {
         FinvizDomainManager fdm = new FinvizDomainManager();
         Prospect[] prospects = fdm.generateRandomProspects();
