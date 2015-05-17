@@ -16,4 +16,5 @@ import java.util.List;
 public interface ProspectDAO {
     public Long create(Prospect prospect);
     public List<Prospect> getAllProspects();
+    public boolean update(Prospect prospect);
 }

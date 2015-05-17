@@ -28,12 +28,16 @@ public class Prospect implements Serializable{
     @GeneratedValue
     Long id;
     
-    @Column(name="ticker_id")
-    Long tickerID;
+    @Column(name="ticker_symbol")
+    String symbol;
     
     @Type(type="org.joda.time.contrib.hibernate.PersistentDateTime")
     @Column(name="creation_date")
     DateTime creationDate;
+    
+    @Type(type="org.joda.time.contrib.hibernate.PersistentDateTime")
+    @Column(name="updated_date")
+    DateTime updatedDate;
     
     @Column(name="price_at_creation")
     Float priceAtCreation;
@@ -50,8 +54,6 @@ public class Prospect implements Serializable{
     Float perf120;
     Float perf240;
     
-    @Transient
-    String symbol;
     @Transient
     String signalAndFeatures;
     
@@ -71,14 +73,6 @@ public class Prospect implements Serializable{
         this.symbol = ticker;
     }
 
-    public Long getTickerID() {
-        return tickerID;
-    }
-
-    public void setTickerID(Long tickerID) {
-        this.tickerID = tickerID;
-    }
-
     public String getSignalAndFeatures() {
         return signalAndFeatures;
     }
@@ -95,6 +89,14 @@ public class Prospect implements Serializable{
         this.creationDate = creationDate;
     }
 
+    public DateTime getUpdatedDate() {
+        return updatedDate;
+    }
+
+    public void setUpdatedDate(DateTime updatedDate) {
+        this.updatedDate = updatedDate;
+    }
+    
     public Float getPriceAtCreation() {
         return priceAtCreation;
     }

@@ -12,6 +12,8 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import com.dreamscape.dataengine.persistence.HibernateUtil;
+import org.hibernate.HibernateException;
+import org.hibernate.transaction.JDBCTransaction;
 import org.joda.time.DateTime;
 
 /**
@@ -32,20 +34,19 @@ public class ProspectDAOHibernateImpl implements ProspectDAO{
 
         prospect.setCreationDate(DateTime.now());
         
-        Long tickerID;
         if (resultList.size() < 1){
             session.close();
             TickerDAO tDAO = new TickerDAOHibernateImpl();
-            tickerID = tDAO.create(new Ticker(prospect.getSymbol()));
+            tDAO.create(new Ticker(prospect.getSymbol()));
             
             session = HibernateUtil.getSessionFactory().openSession();
   
             session.beginTransaction();
         }
-        else
-            tickerID = resultList.get(0).getId();
+        //else
+           // tickerID = resultList.get(0).getId();
         
-        prospect.setTickerID(tickerID);
+        //prospect.setTickerID(tickerID);
         
         Long prospectID = (Long)session.save(prospect);
       
@@ -74,6 +75,32 @@ public class ProspectDAOHibernateImpl implements ProspectDAO{
         session.disconnect();
         
         return allProspects;
+    }
+    
+    @Override
+    public boolean update (Prospect prospect)
+    {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+  
+        JDBCTransaction transaction = (JDBCTransaction)session.beginTransaction();
         
+        try{
+            Query remDuplicates = session.createQuery("Delete Prospect p where p.symbol = '" + prospect.getSymbol() + "'");
+            remDuplicates.executeUpdate();
+        
+            prospect.setUpdatedDate(DateTime.now());
+            session.save(prospect);
+            transaction.commit();
+        }
+        catch(HibernateException e)
+        {
+            System.err.println(e.getMessage());
+            transaction.rollback();
+        }
+        finally
+        {
+            session.close();
+        }
+        return true;
     }
 }
