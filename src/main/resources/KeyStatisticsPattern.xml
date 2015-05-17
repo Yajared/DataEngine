@@ -1,0 +1,223 @@
+<?xml version="1.0"?>
+<patterns>
+<element id="marketCap">
+<pattern>Market Cap (intraday)</pattern>
+<type>number</type>
+</element>
+<element id="enterpriseValue">
+<pattern>Enterprise Value (</pattern>
+<type>number</type>
+</element>
+<element id ="trailingPE">
+<pattern>Trailing P/E (ttm, intraday)</pattern>
+<type>number</type>
+</element>
+<element id ="forwardPE">
+<pattern>Forward P/E</pattern>
+<type>number</type>
+</element>
+<element id ="pegRatio">
+<pattern>PEG Ratio (5 yr expected)</pattern>
+<type>number</type>
+</element>
+<element id ="priceSales">
+<pattern>Price/Sales (ttm)</pattern>
+<type>number</type>
+</element>
+<element id ="priceBook">
+<pattern>Price/Book (mrq)</pattern>
+<type>number</type>
+</element>
+<element id ="eVToRevenue">
+<pattern>Enterprise Value/Revenue (ttm)</pattern>
+<type>number</type>
+</element>
+<element id ="eVToEBITDA">
+<pattern>Enterprise Value/EBITDA (ttm)</pattern>
+<type>number</type>
+</element>
+<element id ="profitMargin">
+<pattern>Profit Margin (ttm)</pattern>
+<type>percent</type>
+</element>
+<element id ="operatingMargin">
+<pattern>Operating Margin (ttm)</pattern>
+<type>percent</type>
+</element>
+<element id ="returnOnAssets">
+<pattern>Return on Assets (ttm)</pattern> 
+<type>percent</type>
+</element>
+<element id ="returnOnEquity">
+<pattern>Return on Equity (ttm)</pattern>
+<type>percent</type>
+</element>
+<element id ="revenue">
+<pattern>Revenue (ttm):</pattern>
+<type>number</type>
+</element>
+<element id ="revenuePerShare">
+<pattern>Revenue Per Share (ttm)</pattern>
+<type>number</type>
+</element>
+<element id ="qtrRevenueGrowth">
+<pattern>Qtrly Revenue Growth (yoy)</pattern>
+<type>percent</type>
+</element>
+<element id ="grossProfit">
+<pattern>Gross Profit (ttm)</pattern>
+<type>number</type>
+</element>
+<element id ="ebitda">
+<pattern>EBITDA (ttm)</pattern>
+<type>number</type>
+</element>
+<element id ="netIncomeAvlToCommonShares">
+<pattern>Net Income Avl to Common (ttm)</pattern>
+<type>number</type>
+</element>
+<element id ="dilutedEPS">
+<pattern>Diluted EPS (ttm)</pattern>
+<type>number</type>
+</element>
+<element id ="qtrEarningsGrowth">
+<pattern>Qtrly Earnings Growth (yoy)</pattern>
+<type>percent</type>
+</element>
+<element id ="totalCash">
+<pattern>Total Cash (mrq)</pattern>
+<type>number</type>
+</element>
+<element id ="totalCashPerShare">
+<pattern>Total Cash Per Share (mrq)</pattern>
+<type>number</type>
+</element>
+<element id ="totalDebt">
+<pattern>Total Debt (mrq)</pattern>
+<type>number</type>
+</element>
+<element id ="totalDebtToEquity">
+<pattern>Total Debt/Equity (mrq)</pattern>
+<type>number</type>
+</element>
+<element id ="currentRatio">
+<pattern>Current Ratio (mrq)</pattern>
+<type>number</type>
+</element>
+<element id ="bookValuePerShare">
+<pattern>Book Value Per Share (mrq)</pattern>
+<type>number</type>
+</element>
+<element id ="operatingCashFlow">
+<pattern>Operating Cash Flow (ttm)</pattern>
+<type>number</type>
+</element>
+<element id ="leveredCashFlow">
+<pattern>Levered Free Cash Flow (ttm)</pattern>
+<type>number</type>
+</element>
+<element id ="beta">
+<pattern>Beta</pattern>
+<type>number</type>
+</element>
+<element id ="fiftyTwoWeekChange">
+<pattern>52-Week Change</pattern>
+<type>percent</type>
+</element>
+<element id ="sp500fiftyTwoWeekChange">
+<pattern>S\&amp;P 500 52-Week Change</pattern>
+<type>percent</type>
+</element>
+<element id ="fiftyTwoWeekHigh">
+<pattern>52-Week High</pattern>
+<type>number</type>
+</element>
+<element id ="fiftyTwoWeekLow">
+<pattern>52-Week Low</pattern>
+<type>number</type>
+</element>
+<element id ="fiftyDayMovingAvg">
+<pattern>50-Day Moving Average</pattern>
+<type>number</type>
+</element>
+<element id ="twoHundredDayMovingAvg">
+<pattern>200-Day Moving Average</pattern>
+<type>number</type>
+</element>
+<element id ="avgVolThreeMon">
+<pattern>Avg Vol (3 month)</pattern>
+<type>number</type>
+</element>
+<element id ="avgVolTenDay">
+<pattern>Avg Vol (10 day)</pattern>
+<type>number</type>
+</element>
+<element id ="sharesOutstanding">
+<pattern>Shares Outstanding</pattern>
+<type>number</type>
+</element>
+<element id ="floatShares">
+<pattern>Float</pattern>
+<type>number</type>
+</element>
+<element id ="percentHeldByInsiders">
+<pattern>% Held by Insiders</pattern>
+<type>percent</type>
+</element>
+<element id ="percentHeldByInstitutions">
+<pattern>% Held by Institutions</pattern>
+<type>percent</type>
+</element>
+<element id ="sharesShort">
+<pattern>Shares Short</pattern>
+<type>number</type>
+</element>
+<element id ="shortRatio">
+<pattern>Short Ratio</pattern>
+<type>number</type>
+</element>
+<element id ="shortPercentOfFloat">
+<pattern>Short % of Float</pattern>
+<type>percent</type>
+</element>
+<element id ="priorMonthSharesShort">
+<pattern>Shares Short (prior month)</pattern>
+<type>number</type>
+</element>
+<element id ="forwardAnnualDividendRate">
+<pattern>Forward Annual Dividend Rate</pattern>
+<type>number</type>
+</element>
+<element id ="forwardAnnualDividendYield">
+<pattern>Forward Annual Dividend Yield</pattern>
+<type>percent</type>
+</element>
+<element id ="trailingAnnualDividendYield">
+<pattern>Trailing Annual Dividend Yield</pattern>
+<type>percent</type>
+</element>
+<element id ="fiveYearAvgDividendYield">
+<pattern>5 Year Average Dividend Yield</pattern>
+<type>percent</type>
+</element>
+<element id ="payoutRatio">
+<pattern>Payout Ratio</pattern>
+<type>percent</type>
+</element>
+<element id ="dividendDate">
+<pattern>Dividend Date</pattern>
+<type>date</type>
+</element>
+<element id ="exDividendDate">
+<pattern>Ex-Dividend Date</pattern>
+<type>date</type>
+</element>
+<element id ="lastSplitFactor">
+<pattern>Last Split Factor (new per old)</pattern>
+<type>ratio</type>
+</element>
+<element id ="lastSplitDate">
+<pattern>Last Split Date</pattern>
+<type>date</type>
+</element>
+</patterns>
