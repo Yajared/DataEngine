@@ -10,7 +10,11 @@ import com.dreamscape.dataengine.connections.FinvizConnectionManager;
 import com.dreamscape.dataengine.domain.Criteria;
 import com.dreamscape.dataengine.domain.Prospect;
 import com.dreamscape.dataengine.domain.managers.FinvizDomainManager.Feature.*;
+import com.dreamscape.utillibrary.parsers.CSVParser;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 /**
@@ -21,6 +25,10 @@ public class FinvizDomainManager {
     
     private static final int MAX_NUMBER_OF_SELECTABLE_FEATURES = 8;
     private static final char CLASS_SEPARATOR_TOKEN = '$';
+    private static final String PRIME_NUMBER_SET_FILE_PATH = "";
+    private static final String CRITERIA_NAME_SET_FILE_PATH = "";
+    
+    private static HashMap<String, Long> primeMap;
     
     private static class Suffix{
         static final String UNUSUAL_VOLUME = "ta_unusualvolume";
@@ -135,6 +143,27 @@ public class FinvizDomainManager {
     }
     
     static final Signal.SignalSelection signalSelection = Signal.SignalSelection.values()[0]; //pointer to static class instance
+    
+    static{
+        primeMap = new HashMap<String, Long>();
+        File file = new File(PRIME_NUMBER_SET_FILE_PATH);
+        File file2 = new File(CRITERIA_NAME_SET_FILE_PATH);
+        try{
+            ArrayList<String> primesAsStrings = CSVParser.convertToListOfString(file, false);
+            ArrayList<String> criteriaNames = CSVParser.convertToListOfString(file2, false);
+            
+            for(int i = 0; i < criteriaNames.size(); i++)
+            {
+                primeMap.put(criteriaNames.get(i), Long.parseLong(primesAsStrings.get(i)));
+            }
+        }
+        catch(IOException e)
+        {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+            System.exit(0);
+        }
+    }
     
     public FinvizDomainManager(){
         
@@ -499,5 +528,8 @@ public class FinvizDomainManager {
             }
         return ret;
     }
-    
+    public static Long lookupPrimeID(String criteriaName)
+    {
+        return primeMap.get(criteriaName);
+    }
 }

@@ -17,4 +17,6 @@ public interface ProspectDAO {
     public Long create(Prospect prospect);
     public List<Prospect> getAllProspects();
     public boolean update(Prospect prospect);
+    public boolean createProspects(Prospect[] prospects);
+    
 }

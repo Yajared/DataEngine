@@ -83,8 +83,6 @@ public class ProspectDAOHibernateImpl implements ProspectDAO{
     public boolean update (Prospect prospect)
     {
         Session session = HibernateUtil.getSessionFactory().openSession();
-  
-        JDBCTransaction transaction = (JDBCTransaction)session.beginTransaction();
         
         try{
             String dateTime = DateTime.now().toString();
@@ -122,17 +120,40 @@ public class ProspectDAOHibernateImpl implements ProspectDAO{
             updateQuery.append("where p.symbol = '" + prospect.getSymbol() + "' AND p.formulaID = '" + prospect.getFormulaID() + "'");
             Query update = session.createQuery(updateQuery.toString());
             update.executeUpdate();
-
-            transaction.commit();
         }
         catch(HibernateException e)
         {
             System.err.println(e.getMessage());
-            transaction.rollback();
         }
         finally
         {
             session.close();
+        }
+        return true;
+    }
+    
+    @Override
+    public boolean createProspects(Prospect[] prospects)
+    {
+        try{
+            if(prospects.length > 0)
+            {
+                //Formula formula = new Formula(prospects);
+                // Create formula
+                // Call Formula DAO to find if unique
+                // if unique Insert
+                // Unique or not, get Formula ID and then assign this to each Prospect and call create for each prospect
+            }
+            for(Prospect prospect : prospects)
+            {
+                this.create(prospect);
+            }
+        }
+        catch(RuntimeException e)
+        {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+            return false;
         }
         return true;
     }

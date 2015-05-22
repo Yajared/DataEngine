@@ -7,8 +7,8 @@
 package com.dreamscape.dataengine.domain;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -22,18 +22,13 @@ import javax.persistence.Table;
 public class Criteria implements Serializable{
     @Id
     Long id;
-    HashSet <Long> criterionSet;
+    
+    @Column(name="prime_id")
+    Long primeID;
+            
+    String name;
 
     public Criteria(){
-        criterionSet = new HashSet<>();
-    }
-    
-    public HashSet getCriterionSet() {
-        return criterionSet;
-    }
-
-    public void setCriterionSet(HashSet criterionSet) {
-        this.criterionSet = criterionSet;
     }
     
     @Override
@@ -42,9 +37,10 @@ public class Criteria implements Serializable{
             if(compareTo.getClass().toString().equals("Criteria"))
             {
                 Criteria compareToCrit = (Criteria)compareTo;
-                HashSet<Long> compareToCriterionSet = compareToCrit.getCriterionSet();
-                if(compareToCriterionSet.containsAll(this.getCriterionSet()))
-                    if(this.getCriterionSet().containsAll(compareToCriterionSet))
+                Long compareToPrimeID = compareToCrit.getPrimeID();
+                String compareToName = compareToCrit.getName();
+                if(compareToPrimeID.compareTo(this.getPrimeID()) == 0)
+                    if(compareToName.equals(this.getName()))
                         return true;
             }
         }
@@ -54,8 +50,24 @@ public class Criteria implements Serializable{
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 53 * hash + Objects.hashCode(this.criterionSet);
+        hash = 53 * hash + Objects.hashCode(this.primeID);
         return hash;
+    }
+
+    public Long getPrimeID() {
+        return primeID;
+    }
+
+    public void setPrimeID(Long primeID) {
+        this.primeID = primeID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
     
     
