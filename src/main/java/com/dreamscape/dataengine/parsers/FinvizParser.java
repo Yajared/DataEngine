@@ -126,44 +126,53 @@ public class FinvizParser extends HTMLParser { //Finviz sold out... so now we ha
         return value;
     }
     public int parseTotalTickersCount(String content){
-        String trimmedContent = BlockReader.trimExcessContent(content, tickerCountStartPattern, tickerCountEndPattern, true, true);
-        this.reader = new BlockReader(trimmedContent);    
-        String textToSearch = reader.getRemainingBlock();
-
-        String currentBlock;
-        Matcher matcher;
-        int i = 1;
-
-        Pattern p = Pattern.compile(tickerCountPattern);
-
-        //System.out.println("Searching through block: " + textToSearch);
-        //System.out.println("Searching for pattern: " + tickerPattern);
-
         int value = 0;
-        int textLength = 0;
-        
-        if(textToSearch != null)
-            textLength = textToSearch.length();
-        else
-            return 0;
-        int searchSpan = textLength;
+        try{
+            String trimmedContent = BlockReader.trimExcessContent(content, tickerCountStartPattern, tickerCountEndPattern, true, true);
+            this.reader = new BlockReader(trimmedContent);    
+            String textToSearch = reader.getRemainingBlock();
 
-        while(i < searchSpan)
-        {
-            currentBlock = (textToSearch.substring(0, i));
-            matcher = p.matcher(currentBlock);
+            String currentBlock;
+            Matcher matcher;
+            int i = 1;
 
-            //System.out.println(currentBlock);
+            Pattern p = Pattern.compile(tickerCountPattern);
 
-            if(matcher.matches())
+            //System.out.println("Searching through block: " + textToSearch);
+            //System.out.println("Searching for pattern: " + tickerPattern);
+
+            int textLength = 0;
+
+            if(textToSearch != null)
+                textLength = textToSearch.length();
+            else
+                return 0;
+            int searchSpan = textLength;
+
+            while(i < searchSpan)
             {
-                value = extractTickerCount(currentBlock);
-                break;
-            }
-            i++;
+                currentBlock = (textToSearch.substring(0, i));
+                matcher = p.matcher(currentBlock);
+
+                //System.out.println(currentBlock);
+
+                if(matcher.matches())
+                {
+                    value = extractTickerCount(currentBlock);
+                    break;
+                }
+                i++;
+            }    
         }
-        
-        return value;
+        catch(RuntimeException e)
+        {
+            System.err.println("Runtime Exception encountered when trying to parse the page!");
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
+        finally{
+            return value;
+        }
     }
     
     private static String extractTickerValue(String currentBlock){

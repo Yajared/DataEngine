@@ -48,8 +48,13 @@ public class FinvizConnectionManager {
             
             System.out.println("Complete URL: " + completeURLWithPagination);
             
-            singlePageProspectList = fp.parseTickers(content);
-            prospectList.addAll(singlePageProspectList);
+            if(totalTickers > 0)
+            {
+                singlePageProspectList = fp.parseTickers(content);
+                prospectList.addAll(singlePageProspectList);
+            }
+            else
+                System.out.println("No companies found with the following criteria: " + urlSuffix);
         } while(totalTickers > (20 * i++));
         
         return prospectList;

@@ -49,6 +49,7 @@ public class Prospect implements Serializable{
     Float perf5;
     Float perf10;
     Float perf20;
+    Float perf30;
     Float perf40;
     Float perf60;
     Float perf120;
@@ -143,6 +144,14 @@ public class Prospect implements Serializable{
 
     public void setPerf20(Float perf20) {
         this.perf20 = perf20;
+    }
+
+    public Float getPerf30() {
+        return perf30;
+    }
+
+    public void setPerf30(Float perf30) {
+        this.perf30 = perf30;
     }
 
     public Float getPerf40() {

@@ -40,17 +40,21 @@ public class FinvizDomainManagerTest {
     public void tearDown() {
     }
 
-    @Ignore
+    @Test
     public void generateRandomProspectsTest() {
         FinvizDomainManager fdm = new FinvizDomainManager();
         Prospect[] prospects = fdm.generateRandomProspects();
         
         if(prospects.length > 0)
+        {
             System.out.println(prospects[0].getSignalAndFeatures());
-        int i = 0;
-        for(; i < prospects.length; i++){
-            System.out.println(prospects[i].getSymbol());
+            int i = 0;
+            for(; i < prospects.length; i++){
+                System.out.println(prospects[i].getSymbol());
+            }
+            System.out.println("Number of Companies Found: " + (i + 1));
         }
-        System.out.println("Number of Companies Found: " + (i + 1));
+        else
+            System.out.println("No prospects were found with the randomly generated signal and features.");
     }
 }

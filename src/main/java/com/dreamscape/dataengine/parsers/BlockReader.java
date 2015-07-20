@@ -28,7 +28,7 @@ public class BlockReader {
             return null;
     }
 
-    static String trimExcessContent(String content, String startContent, String endContent, boolean throwExceptionIfStartContentMissing, boolean throwExceptionIfEndContentMissing) throws StringIndexOutOfBoundsException{
+    static String trimExcessContent(String content, String startContent, String endContent, boolean throwExceptionIfStartContentMissing, boolean throwExceptionIfEndContentMissing) throws RuntimeException{
         
         //System.out.println("Content: " + content);
         //System.out.println("Start Content: " + startContent);

@@ -13,7 +13,6 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import com.dreamscape.dataengine.persistence.HibernateUtil;
 import org.hibernate.HibernateException;
-import org.hibernate.transaction.JDBCTransaction;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -26,8 +25,6 @@ public class ProspectDAOHibernateImpl implements ProspectDAO{
     @Override
     public Long create(Prospect prospect){
         Session session = HibernateUtil.getSessionFactory().openSession();
-  
-        session.beginTransaction();
         
         System.out.println("Prospect symbol: " + prospect.getSymbol());
         Query q = session.createQuery("From Ticker t where t.symbol ='" + prospect.getSymbol() + "'" );//+ 
@@ -42,8 +39,6 @@ public class ProspectDAOHibernateImpl implements ProspectDAO{
             tDAO.create(new Ticker(prospect.getSymbol()));
             
             session = HibernateUtil.getSessionFactory().openSession();
-  
-            session.beginTransaction();
         }
         //else
            // tickerID = resultList.get(0).getId();
@@ -66,24 +61,32 @@ public class ProspectDAOHibernateImpl implements ProspectDAO{
     
     @Override
     public List<Prospect> getAllProspects(){
+        List<Prospect> allProspects = null;
         Session session = HibernateUtil.getSessionFactory().openSession();
   
         session.beginTransaction();
+        try{
+            Query q = session.createQuery("From Prospect ");
         
-        Query q = session.createQuery("From Prospect ");
-        
-        List<Prospect> allProspects = (List<Prospect>)q.list();
-        
-        session.disconnect();
-        
+            allProspects = (List<Prospect>)q.list();
+        }
+        catch(HibernateException e)
+        {
+            System.err.println(e.getMessage());
+            throw new RuntimeException(e);
+        }
+        finally{
+            session.flush();
+            session.disconnect();
+        }
         return allProspects;
     }
     
     @Override
     public boolean update (Prospect prospect)
     {
-        Session session = HibernateUtil.getSessionFactory().openSession();
         
+        Session session = HibernateUtil.getSessionFactory().openSession();
         try{
             String dateTime = DateTime.now().toString();
             // Format for input
@@ -118,16 +121,23 @@ public class ProspectDAOHibernateImpl implements ProspectDAO{
                 updateQuery.deleteCharAt(updateQuery.length() - 1);
             
             updateQuery.append("where p.symbol = '" + prospect.getSymbol() + "' AND p.formulaID = '" + prospect.getFormulaID() + "'");
+            
+            session.beginTransaction();
+            
             Query update = session.createQuery(updateQuery.toString());
+            
             update.executeUpdate();
+            session.getTransaction().commit();
         }
         catch(HibernateException e)
         {
+            session.getTransaction().rollback();
             System.err.println(e.getMessage());
+            throw new RuntimeException(e);
         }
         finally
         {
-            session.close();
+            session.disconnect();
         }
         return true;
     }
