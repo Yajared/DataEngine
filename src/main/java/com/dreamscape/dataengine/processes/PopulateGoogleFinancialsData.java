@@ -44,7 +44,7 @@ public class PopulateGoogleFinancialsData {
             for(int i = 0 ; i < numberOfRows;i++){
                 String[] rowOfTickers = tickers.get(i);
                 
-                for(int j = 0;j< rowOfTickers.length; j++){
+                for(int j = 2499;j < rowOfTickers.length; j++){
                     System.out.println(i + j);
                     ticker = rowOfTickers[j];
                     tickerParsed = populateMFI(ticker, p);

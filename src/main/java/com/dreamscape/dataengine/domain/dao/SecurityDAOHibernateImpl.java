@@ -11,6 +11,7 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import com.dreamscape.dataengine.persistence.HibernateUtil;
+import java.util.ArrayList;
 
 /**
  *
@@ -46,7 +47,23 @@ public class SecurityDAOHibernateImpl implements SecurityDAO {
         if(securities.size() > 0)
             security = securities.get(0);
         
+        session.close();
         return security;
+    }
+    
+    @Override
+    public List<Security> retrieveSecuritiesWithQuery(String query)
+    {
+        List<Security> ret = new ArrayList<>();
+        
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        
+        Query retrieveSecurity = session.createQuery(query);
+        List<Security> securities = retrieveSecurity.list();
+        
+        session.close();
+        return securities;
     }
     
     @Override

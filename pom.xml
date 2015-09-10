@@ -4,7 +4,7 @@
 
   <groupId>dreamscape</groupId>
   <artifactId>DataEngine</artifactId>
-  <version>1.3</version>
+  <version>1.4</version>
   <packaging>jar</packaging>
 
   <name>DataEngine</name>
@@ -115,7 +115,7 @@
     <dependency>
         <groupId>dreamscape</groupId>
         <artifactId>tradingDayInformation</artifactId>
-        <version>1.2</version>
+        <version>1.4</version>
     </dependency>
     <dependency>
         <groupId>dreamscape</groupId>

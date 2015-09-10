@@ -6,7 +6,12 @@
 
 package com.dreamscape.dataengine.domain;
 
+import com.dreamscape.tradingdayinformation.implementation.EODPriceInformation;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -35,15 +40,15 @@ public class Prospect implements Serializable{
     @Column(name="creation_date")
     DateTime creationDate;
     
+    @Column(name="portfolio_id")
+    Long portfolioId;
+    
     @Type(type="org.joda.time.contrib.hibernate.PersistentDateTime")
     @Column(name="updated_date")
     DateTime updatedDate;
     
     @Column(name="price_at_creation")
     Float priceAtCreation;
-    
-    @Column(name="formula_id")
-    Long formulaID;
     
     Float perf3;
     Float perf5;
@@ -58,10 +63,35 @@ public class Prospect implements Serializable{
     @Transient
     String signalAndFeatures;
     
-    public Prospect(){
-        
+    @Transient
+    Map<String, Boolean> updateFlags = new HashMap<>();
+    
+    public Prospect(){ 
+        updateFlags = new HashMap<>();
     }
-
+    
+    public static ArrayList<Prospect> convertSecuritiesToProspects(List<Security> securities, DateTime creationDate)
+    {
+        ArrayList<Prospect> prospects = new ArrayList<>();
+        
+        for(Security s : securities)
+        {
+            Prospect p = new Prospect();
+            p.setSymbol(s.getTicker());
+            p.setCreationDate(creationDate);
+            
+            ArrayList<Double> pricesSinceCreation = EODPriceInformation.downloadHistoricalPrices(s.getTicker(), creationDate);
+            if(pricesSinceCreation == null)
+                p.setPriceAtCreation(null);
+            else
+                p.setPriceAtCreation(pricesSinceCreation.get(pricesSinceCreation.size() - 1).floatValue());
+            
+            prospects.add(p);
+        }
+        
+        return prospects;
+    }
+    
     public Long getId() {
         return id;
     }
@@ -90,6 +120,14 @@ public class Prospect implements Serializable{
         this.creationDate = creationDate;
     }
 
+    public Long getPortfolioId() {
+        return portfolioId;
+    }
+
+    public void setPortfolioId(Long portfolioId) {
+        this.portfolioId = portfolioId;
+    }
+
     public DateTime getUpdatedDate() {
         return updatedDate;
     }
@@ -104,14 +142,6 @@ public class Prospect implements Serializable{
 
     public void setPriceAtCreation(Float priceAtCreation) {
         this.priceAtCreation = priceAtCreation;
-    }
-
-    public Long getFormulaID() {
-        return formulaID;
-    }
-
-    public void setFormulaID(Long formulaID) {
-        this.formulaID = formulaID;
     }
 
     public Float getPerf3() {
@@ -184,6 +214,10 @@ public class Prospect implements Serializable{
 
     public void setPerf240(Float perf240) {
         this.perf240 = perf240;
+    }
+
+    public Map<String, Boolean> getUpdateFlags() {
+        return updateFlags;
     }
 
     @Override

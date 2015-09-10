@@ -16,6 +16,7 @@ import java.util.List;
 public interface ProspectDAO {
     public Long create(Prospect prospect);
     public List<Prospect> getAllProspects();
+    public List<Prospect> getProspectsByPortfolioId(Long portfolioId);
     public boolean update(Prospect prospect);
     public boolean createProspects(Prospect[] prospects);
     

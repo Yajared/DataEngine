@@ -30,13 +30,12 @@ public class PopulateKeyStatisticsData {
         try{
             br = new BufferedReader(new FileReader(tickerNamesInCSVFormat));
             ArrayList<String[]> tickers = CSVParser.convertToListOfStringArray(br, false);
-            
             InputStream is = getClass().getResourceAsStream("/KeyStatisticsPattern.xml");
             YahooKeyStatisticsParser p = new YahooKeyStatisticsParser();
             p.generatePatterns(is);
         
-            String ticker = "";
-            boolean tickerParsed = false;
+            String ticker;
+            boolean tickerParsed;
             ArrayList<String> unparseableTickers = new ArrayList();
             int numberOfRows = tickers.size();
             for(int i = 0; i<numberOfRows;i++){
@@ -44,7 +43,7 @@ public class PopulateKeyStatisticsData {
                 
                 for(int j = 0;j< rowOfTickers.length; j++){
                     System.out.println(i + j);
-                    ticker = rowOfTickers[j];
+                    ticker = rowOfTickers[j].replace('.', '-');
                     tickerParsed = populate(ticker, p);
                     if(tickerParsed == false){
                         unparseableTickers.add(ticker);

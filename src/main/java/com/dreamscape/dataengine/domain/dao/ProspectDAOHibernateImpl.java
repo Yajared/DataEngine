@@ -25,37 +25,50 @@ public class ProspectDAOHibernateImpl implements ProspectDAO{
     @Override
     public Long create(Prospect prospect){
         Session session = HibernateUtil.getSessionFactory().openSession();
-        
-        System.out.println("Prospect symbol: " + prospect.getSymbol());
-        Query q = session.createQuery("From Ticker t where t.symbol ='" + prospect.getSymbol() + "'" );//+ 
+        Long prospectID = null;
+        try{
+            session.beginTransaction();
+            System.out.println("Prospect symbol: " + prospect.getSymbol());
+            Query q = session.createQuery("From Ticker t where t.symbol ='" + prospect.getSymbol() + "'" );//+ 
         //        " AND signals_and_features = " + prospect.getSignalAndFeatures());
-        List<Prospect> resultList = q.list();
-
-        prospect.setCreationDate(DateTime.now());
-        
-        if (resultList.size() < 1){
-            session.close();
-            TickerDAO tDAO = new TickerDAOHibernateImpl();
-            tDAO.create(new Ticker(prospect.getSymbol()));
+            List<Prospect> resultList = q.list();
             
-            session = HibernateUtil.getSessionFactory().openSession();
-        }
-        //else
-           // tickerID = resultList.get(0).getId();
+            if(prospect.getCreationDate() == null)
+                prospect.setCreationDate(DateTime.now());
+        
+            if (resultList.size() < 1){
+                session.close();
+                TickerDAO tDAO = new TickerDAOHibernateImpl();
+                tDAO.create(new Ticker(prospect.getSymbol()));
+            
+                session = HibernateUtil.getSessionFactory().openSession();
+                session.beginTransaction();
+            }
+            //else
+            //    tickerID = resultList.get(0).getId();
         
         //prospect.setTickerID(tickerID);
         
-        Long prospectID = (Long)session.save(prospect);
+            prospectID = (Long)session.save(prospect);
       
-        session.getTransaction().commit();
- 
-        q = session.createQuery("From Prospect ");
-                 
-        resultList = (List<Prospect>)q.list();
-        System.out.println("num of prospects:" + resultList.size());
-        for (Prospect next : resultList) {
-            System.out.println("Next Prospect: " + next);
+            session.getTransaction().commit();
         }
+        catch(HibernateException e)
+        {
+            System.err.println(e.getMessage());
+            throw new RuntimeException(e);
+        }
+        finally{
+            session.disconnect();
+            session.flush();
+        }
+        //q = session.createQuery("From Prospect ");
+                 
+        //resultList = (List<Prospect>)q.list();
+        //System.out.println("num of prospects:" + resultList.size());
+        //for (Prospect next : resultList) {
+        //    System.out.println("Next Prospect: " + next);
+        //}
         return prospectID;
     }
     
@@ -68,6 +81,29 @@ public class ProspectDAOHibernateImpl implements ProspectDAO{
         try{
             Query q = session.createQuery("From Prospect ");
         
+            allProspects = (List<Prospect>)q.list();
+        }
+        catch(HibernateException e)
+        {
+            System.err.println(e.getMessage());
+            throw new RuntimeException(e);
+        }
+        finally{
+            session.flush();
+            session.disconnect();
+        }
+        return allProspects;
+    }
+    
+    @Override
+    public List<Prospect>getProspectsByPortfolioId(Long portfolioId)
+    {
+        List<Prospect> allProspects = null;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+  
+        session.beginTransaction();
+        try{
+            Query q = session.createQuery("From Prospect p where p.portfolioId='" + portfolioId + "'");
             allProspects = (List<Prospect>)q.list();
         }
         catch(HibernateException e)
@@ -96,31 +132,28 @@ public class ProspectDAOHibernateImpl implements ProspectDAO{
             // Format for output
             DateTimeFormatter dtfOut = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
             
-            
-            System.out.println("Updated version 3.");
-            
             StringBuilder updateQuery = new StringBuilder("update Prospect p set p.updatedDate = '" + dtfOut.print(jodatime) + "',");
-            if(prospect.getPerf3() != null)
+            if(prospect.getPerf3() != null && prospect.getUpdateFlags().get("Perf3") != null)
                 updateQuery.append(" p.perf3 = '" + prospect.getPerf3() + "',");
-            if(prospect.getPerf5() != null)
+            if(prospect.getPerf5() != null && prospect.getUpdateFlags().get("Perf5") != null)
                 updateQuery.append(" p.perf5 = '"+ prospect.getPerf5() + "',");
-            if(prospect.getPerf10() != null)
+            if(prospect.getPerf10() != null && prospect.getUpdateFlags().get("Perf10") != null)
                 updateQuery.append(" p.perf10 = '"+ prospect.getPerf10() + "',");
-            if(prospect.getPerf20() != null)
+            if(prospect.getPerf20() != null && prospect.getUpdateFlags().get("Perf20") != null)
                 updateQuery.append(" p.perf20 = '"+ prospect.getPerf20() + "',");
-            if(prospect.getPerf40() != null)
+            if(prospect.getPerf40() != null && prospect.getUpdateFlags().get("Perf40") != null)
                 updateQuery.append(" p.perf40 = '"+ prospect.getPerf40() + "',");
-            if(prospect.getPerf60() != null)
+            if(prospect.getPerf60() != null && prospect.getUpdateFlags().get("Perf60") != null)
                 updateQuery.append(" p.perf60 = '"+ prospect.getPerf60() + "',");
-            if(prospect.getPerf120() != null)
+            if(prospect.getPerf120() != null && prospect.getUpdateFlags().get("Perf120") != null)
                 updateQuery.append(" p.perf120 = '"+ prospect.getPerf120() + "',");
-            if(prospect.getPerf240() != null)
+            if(prospect.getPerf240() != null && prospect.getUpdateFlags().get("Perf240") != null)
                 updateQuery.append(" p.perf240 = '"+ prospect.getPerf240() + "'");
 
             if(updateQuery.charAt(updateQuery.length() - 1) == ',')
                 updateQuery.deleteCharAt(updateQuery.length() - 1);
             
-            updateQuery.append("where p.symbol = '" + prospect.getSymbol() + "' AND p.formulaID = '" + prospect.getFormulaID() + "'");
+            updateQuery.append("where p.symbol = '" + prospect.getSymbol() + "' AND p.portfolioId = '" + prospect.getPortfolioId() + "'");
             
             session.beginTransaction();
             
