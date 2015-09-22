@@ -122,6 +122,11 @@
         <artifactId>utilLibrary</artifactId>
         <version>1.2</version>
     </dependency>
+    <dependency>
+        <groupId>dreamscape</groupId>
+        <artifactId>AnalysisEngine</artifactId>
+        <version>1.0</version>
+    </dependency>
   </dependencies>
   <build>
         <plugins>

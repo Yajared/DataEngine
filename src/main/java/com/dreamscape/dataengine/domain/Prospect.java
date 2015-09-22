@@ -6,9 +6,12 @@
 
 package com.dreamscape.dataengine.domain;
 
+import com.dreamscape.dataengine.utils.PerformanceTimeFrame;
 import com.dreamscape.tradingdayinformation.implementation.EODPriceInformation;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,6 +62,9 @@ public class Prospect implements Serializable{
     Float perf60;
     Float perf120;
     Float perf240;
+    
+    @Transient
+    Float performanceForComparison;
     
     @Transient
     String signalAndFeatures;
@@ -220,9 +226,173 @@ public class Prospect implements Serializable{
         return updateFlags;
     }
 
+    public Float getPerformanceForComparison() {
+        return performanceForComparison;
+    }
+
+    public void setPerformanceForComparison(Float performanceForComparison) {
+        this.performanceForComparison = performanceForComparison;
+    }
+
     @Override
     public String toString() {
         return "Prospect{" + "ticker=" + symbol + ", Signal and Features=" + signalAndFeatures + "}";
     }
+    public Float getPerformance(PerformanceTimeFrame timeFrame)
+    {
+        validateTimeFrame(timeFrame);
+        Float performance = 0.0f;
+        switch(timeFrame)
+                {
+                    case Perf3:
+                    {
+                        performance = this.getPerf3();
+                        break;
+                    }
+                    case Perf5:
+                    {
+                        performance = this.getPerf5();
+                        break;
+                    }
+                    case Perf10:
+                    {
+                        performance = this.getPerf10();
+                        break;
+                    }
+                    case Perf20:
+                    {
+                        performance = this.getPerf20();
+                        break;
+                    }
+                    case Perf30:
+                    {
+                        performance = this.getPerf30();
+                        break;
+                    }
+                    case Perf40:
+                    {
+                        performance = this.getPerf40();
+                        break;
+                    }
+                    case Perf60:
+                    {
+                        performance = this.getPerf60();
+                        break;
+                    }
+                    case Perf120:
+                    {
+                        performance = this.getPerf120();
+                        break;
+                    }
+                    case Perf240:
+                    {
+                        performance = this.getPerf240();
+                        break;
+                    }
+                }
+                return performance;
+        
+    }
+    public static Comparator<Prospect> getComparatorAndInitializeListForSorting(List<Prospect> prospectsToInitialize, PerformanceTimeFrame timeFrame)
+    {
+        initializeProspectComparisonValues(prospectsToInitialize, timeFrame);
+        return new Comparator<Prospect>() {
+            @Override
+            public int compare(Prospect o1, Prospect o2) {
+                //try{
+                    if(o1 == null && o2 == null)
+                        return 0;
+                    if(o1 == null)
+                        return -1;
+                    if(o2 == null)
+                        return 1;
+                
+                Float value1 = o1.getPerformanceForComparison();
+                Float value2 = o2.getPerformanceForComparison();
+                
+                if(value1 == null && value2 == null)
+                    return 0;
+                else if(value1 == null)
+                    return -1;
+                else if(value2 == null)
+                    return 1;
+                else if(value1 < value2)
+                    return -1;
+                else if(value1.equals(value2)) 
+                    return 0;
+                return 1;
+                /*}
+                catch(NullPointerException e)
+                {
+                    System.err.println("Caught NPE.");
+                    throw e;
+                }*/
+            };
+        };
+    }
+    public static boolean validateTimeFrame(PerformanceTimeFrame timeFrame)
+    {
+        return Arrays.asList(PerformanceTimeFrame.values()).contains(timeFrame);
+    }
     
+    private static void initializeProspectComparisonValues(List<Prospect> prospects, PerformanceTimeFrame timeFrame)
+    {
+        switch(timeFrame)
+        {
+            case Perf3:
+            {
+                for(Prospect p : prospects)
+                    p.setPerformanceForComparison(p.getPerf3());
+                break;
+            }
+            case Perf5:
+            {
+                for(Prospect p : prospects)
+                    p.setPerformanceForComparison(p.getPerf5());
+                break;
+            }
+            case Perf10:
+            {
+                for(Prospect p : prospects)
+                    p.setPerformanceForComparison(p.getPerf10());
+                break;
+            }
+            case Perf20:
+            {
+                for(Prospect p : prospects)
+                    p.setPerformanceForComparison(p.getPerf20());
+                break;
+            }
+            case Perf30:
+            {
+                for(Prospect p : prospects)
+                    p.setPerformanceForComparison(p.getPerf30());
+                break;
+            }
+            case Perf40:
+            {
+                for(Prospect p : prospects)
+                    p.setPerformanceForComparison(p.getPerf40());
+                break;
+            }
+            case Perf60:
+            {
+                for(Prospect p : prospects)
+                    p.setPerformanceForComparison(p.getPerf60());
+                break;
+            }
+            case Perf120:
+            {
+                for(Prospect p : prospects)
+                    p.setPerformanceForComparison(p.getPerf120());
+                break;
+            }
+            case Perf240:
+            {
+                for(Prospect p : prospects)
+                    p.setPerformanceForComparison(p.getPerf240());
+                break;
+            } 
+        }
+    }
 }
