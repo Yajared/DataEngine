@@ -85,7 +85,7 @@ public class PopulateGoogleFinancialsData {
                 
                 Security s = securityDAO.retrieve(ticker);
                 
-                Double mfRatio = calculateMFRatio(returnOnIC, s.geteVToEBITDA());
+                Double mfRatio = calculateMFRatio(returnOnIC, s.getEvToEBITDA());
                 
                 columns.add("returnOnIC");
                 columns.add("magicFormulaRatio");

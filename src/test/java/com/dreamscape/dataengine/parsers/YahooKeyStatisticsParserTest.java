@@ -205,10 +205,10 @@ public class YahooKeyStatisticsParserTest {
          assertEquals(priceBook, security.getPriceBook(), .01);
          
          Double eVToRevenue = new Double(0.87);
-         assertEquals(eVToRevenue, security.geteVToRevenue(), .01);
+         assertEquals(eVToRevenue, security.getEvToRevenue(), .01);
          
          Double eVToEBITDA = new Double(6.64);
-         assertEquals(eVToEBITDA, security.geteVToEBITDA(), .01);
+         assertEquals(eVToEBITDA, security.getEvToEBITDA(), .01);
          
          Double profitMargin = new Double(.0623);
          assertEquals(profitMargin, security.getProfitMargin(), .0001);

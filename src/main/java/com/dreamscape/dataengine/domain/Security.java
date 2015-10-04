@@ -7,7 +7,12 @@
 package com.dreamscape.dataengine.domain;
 
 //import com.dreamscape.tradingdayinformation.YahooFinanceHistoricalPriceConnectionManager;
-import java.util.ArrayList;
+import com.sun.xml.internal.ws.util.StringUtils;
+import dreamscape.analysisengine.Feature;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Comparator;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -33,8 +38,8 @@ public class Security {
     private Double pegRatio;
     private Double priceSales;
     private Double priceBook;
-    private Double eVToRevenue;
-    private Double eVToEBITDA;
+    private Double evToRevenue;
+    private Double evToEBITDA;
     private Double assetScore;
     private Double valueScore;
     private Double profitMargin;
@@ -85,6 +90,8 @@ public class Security {
     @Transient
     private DateTime lastSplitDate;
     
+    @Transient
+    private Double comparisonValue;
     
     public Security(){
         
@@ -104,6 +111,61 @@ public class Security {
 //        
 //        this.historicalPrices = connection.downloadHistoricalPrices(this.getTicker(), from);
 //    }
+    
+    public static void initializeForSorting(Feature feature, List<Security> securities) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException
+    {
+        try{
+            Class clazz = Class.forName("com.dreamscape.dataengine.domain.Security");
+            Method method = clazz.getMethod("get" + StringUtils.capitalize(feature.toString()));
+            
+            for(Security s : securities)
+            {
+                s.setComparisonValue((Double)method.invoke(s));
+            }
+        }
+        catch(ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e)
+        {
+            throw e;
+        }
+    }
+    public static Comparator<Security> getComparatorForFeatureAndInitializeForSorting(Feature feature, List<Security> securities) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException
+    {
+        initializeForSorting(feature, securities);
+        return new Comparator<Security>() {
+            @Override
+            public int compare(Security o1, Security o2) 
+            {
+                //try{
+                if(o1 == null && o2 == null)
+                    return 0;
+                if(o1 == null)
+                    return -1;
+                if(o2 == null)
+                    return 1;
+
+                Double value1 = o1.getComparisonValue();
+                Double value2 = o2.getComparisonValue();
+
+                if(value1 == null && value2 == null)
+                    return 0;
+                else if(value1 == null)
+                    return -1;
+                else if(value2 == null)
+                    return 1;
+                else if(value1 < value2)
+                    return -1;
+                else if(value1.equals(value2)) 
+                    return 0;
+                return 1;
+                /*}
+                catch(NullPointerException e)
+                {
+                    System.err.println("Caught NPE.");
+                    throw e;
+                }*/
+            };
+        };
+    }
     
     public String getTicker() {
         return ticker;
@@ -177,20 +239,20 @@ public class Security {
         this.priceBook = priceBook;
     }
 
-    public Double geteVToRevenue() {
-        return eVToRevenue;
+    public Double getEvToRevenue() {
+        return evToRevenue;
     }
 
-    public void seteVToRevenue(Double eVToRevenue) {
-        this.eVToRevenue = eVToRevenue;
+    public void setEvToRevenue(Double evToRevenue) {
+        this.evToRevenue = evToRevenue;
     }
 
-    public Double geteVToEBITDA() {
-        return eVToEBITDA;
+    public Double getEvToEBITDA() {
+        return evToEBITDA;
     }
 
-    public void seteVToEBITDA(Double eVToEBITDA) {
-        this.eVToEBITDA = eVToEBITDA;
+    public void setEvToEBITDA(Double evToEBITDA) {
+        this.evToEBITDA = evToEBITDA;
     }
 
     public Double getProfitMargin() {
@@ -552,5 +614,12 @@ public class Security {
     public void setValueScore(Double valueScore) {
         this.valueScore = valueScore;
     }
-    
+
+    public Double getComparisonValue() {
+        return comparisonValue;
+    }
+
+    public void setComparisonValue(Double comparisonValue) {
+        this.comparisonValue = comparisonValue;
+    }
 }

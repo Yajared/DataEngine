@@ -138,8 +138,8 @@ public class YahooKeyStatisticsParser extends HTMLParser {
         security.setPegRatio((Double)parseValue(sourceMetrics.get("pegRatio")));
         security.setPriceSales((Double)parseValue(sourceMetrics.get("priceSales")));
         security.setPriceBook((Double)parseValue(sourceMetrics.get("priceBook")));
-        security.seteVToRevenue((Double)parseValue(sourceMetrics.get("eVToRevenue")));
-        security.seteVToEBITDA((Double)parseValue(sourceMetrics.get("eVToEBITDA")));
+        security.setEvToRevenue((Double)parseValue(sourceMetrics.get("eVToRevenue")));
+        security.setEvToEBITDA((Double)parseValue(sourceMetrics.get("eVToEBITDA")));
         security.setProfitMargin((Double)parseValue(sourceMetrics.get("profitMargin")));
         security.setOperatingMargin((Double)parseValue(sourceMetrics.get("operatingMargin")));
         security.setReturnOnAssets((Double)parseValue(sourceMetrics.get("returnOnAssets")));

@@ -12,6 +12,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import com.dreamscape.dataengine.persistence.HibernateUtil;
 import java.util.ArrayList;
+import org.hibernate.HibernateException;
 
 /**
  *
@@ -54,15 +55,21 @@ public class SecurityDAOHibernateImpl implements SecurityDAO {
     @Override
     public List<Security> retrieveSecuritiesWithQuery(String query)
     {
-        List<Security> ret = new ArrayList<>();
-        
+        List<Security> securities = new ArrayList<>();
         Session session = HibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
+        try{
+            session.beginTransaction();
         
-        Query retrieveSecurity = session.createQuery(query);
-        List<Security> securities = retrieveSecurity.list();
-        
-        session.close();
+            Query retrieveSecurity = session.createQuery(query);
+            securities = retrieveSecurity.list();
+        }
+        catch(HibernateException e)
+        {
+            throw e;
+        }
+        finally{
+            session.close();
+        }
         return securities;
     }
     
@@ -86,4 +93,8 @@ public class SecurityDAOHibernateImpl implements SecurityDAO {
     public void delete(Long ID){
         
     }
+    //public List<Security> retrieveByTickersBatched(List<String> tickers)
+    //{
+    //    
+    //}
 }

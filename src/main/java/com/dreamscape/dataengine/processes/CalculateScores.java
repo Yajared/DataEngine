@@ -64,8 +64,8 @@ public class CalculateScores {
         double priceToBook = 10.0;
         
         
-        if (!String.valueOf(security.geteVToEBITDA()).equals("NaN"))
-            ebitdaEv = security.geteVToEBITDA();
+        if (!String.valueOf(security.getEvToEBITDA()).equals("NaN"))
+            ebitdaEv = security.getEvToEBITDA();
         
         if(!String.valueOf(security.getPriceBook()).equals("NaN"))
             priceToBook = security.getPriceBook();
