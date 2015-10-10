@@ -7,12 +7,13 @@
 package com.dreamscape.dataengine.domain;
 
 //import com.dreamscape.tradingdayinformation.YahooFinanceHistoricalPriceConnectionManager;
-import com.sun.xml.internal.ws.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import dreamscape.analysisengine.Feature;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Comparator;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -82,6 +83,10 @@ public class Security {
     private Double forwardAnnualDividendYield;
     private Double fiveYearAvgDividendYield;
     private Double payoutRatio;
+    @Column(name="returnOnIc")
+    private Double returnOnInvestedCapital;
+    private Double magicFormulaRatio;
+    
     @Transient // TODO: Remove these and actually save the dates
     private DateTime dividendDate;
     @Transient
@@ -622,4 +627,22 @@ public class Security {
     public void setComparisonValue(Double comparisonValue) {
         this.comparisonValue = comparisonValue;
     }
+
+    public Double getReturnOnInvestedCapital() {
+        return returnOnInvestedCapital;
+    }
+
+    public void setReturnOnInvestedCapital(Double returnOnInvestedCapital) {
+        this.returnOnInvestedCapital = returnOnInvestedCapital;
+    }
+
+    public Double getMagicFormulaRatio() {
+        return magicFormulaRatio;
+    }
+
+    public void setMagicFormulaRatio(Double magicFormulaRatio) {
+        this.magicFormulaRatio = magicFormulaRatio;
+    }
+    
+    
 }

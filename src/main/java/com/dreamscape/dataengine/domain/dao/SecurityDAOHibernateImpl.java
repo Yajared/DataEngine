@@ -6,13 +6,16 @@
 
 package com.dreamscape.dataengine.domain.dao;
 
+import com.dreamscape.dataengine.domain.Prospect;
 import com.dreamscape.dataengine.domain.Security;
+import com.dreamscape.dataengine.domain.Ticker;
 import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import com.dreamscape.dataengine.persistence.HibernateUtil;
 import java.util.ArrayList;
 import org.hibernate.HibernateException;
+import org.joda.time.DateTime;
 
 /**
  *
@@ -74,21 +77,38 @@ public class SecurityDAOHibernateImpl implements SecurityDAO {
     }
     
     @Override
-    public void update(String ticker, List <String> columnsToUpdate, List <Object> updatedValues){
+    public void update(String ticker, List <String> columnsToUpdate, List <Double> updatedValues){
         Session session = HibernateUtil.getSessionFactory().openSession();
-        
-        session.beginTransaction();
-        String columnsAndValues = "";
-        int numColumns = columnsToUpdate.size();
-        for(int i = 0; i < numColumns; i++){
-            columnsAndValues += columnsToUpdate.get(i) + "='" + ((Double)updatedValues.get(i)).toString() + "',";
+        try{
+            session.beginTransaction();
+            String columnsAndValues = "";
+            int numColumns = columnsToUpdate.size();
+            for(int i = 0; i < numColumns; i++){
+                if(updatedValues.get(i) != null)
+                    columnsAndValues += columnsToUpdate.get(i) + "='" + (updatedValues.get(i)) + "',";
+            }
+            
+            if(columnsAndValues.length() > 0)
+            {
+                if(columnsAndValues.charAt(columnsAndValues.length() - 1) == ',')
+                    columnsAndValues = columnsAndValues.substring(0, columnsAndValues.length() - 1); //remove trailing comma
+                
+                Query updateSecurity = session.createQuery("Update Security s set " + columnsAndValues + " where s.ticker = '" + ticker + "'");
+
+                updateSecurity.executeUpdate();
+
+                session.getTransaction().commit();
+            }
         }
-        columnsAndValues = columnsAndValues.substring(0, columnsAndValues.length() - 1); //remove trailing comma
-        Query updateSecurity = session.createQuery("Update Security s set " + columnsAndValues + " where s.ticker = '" + ticker + "'");
-        
-        updateSecurity.executeUpdate();
-        
-        session.getTransaction().commit();
+        catch(HibernateException e)
+        {
+            System.err.println(e.getMessage());
+            throw new RuntimeException(e);
+        }
+        finally{
+            session.disconnect();
+            session.flush();
+        }
     }
     public void delete(Long ID){
         

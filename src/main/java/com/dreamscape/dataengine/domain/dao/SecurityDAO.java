@@ -17,6 +17,6 @@ public interface SecurityDAO {
     public Long create(Security security);
     public Security retrieve(String ticker);
     public List<Security> retrieveSecuritiesWithQuery(String query);
-    public void update(String ticker, List <String> columnsToUpdate, List <Object> updatedValues);
+    public void update(String ticker, List <String> columnsToUpdate, List <Double> updatedValues);
     public void delete(Long ID);
 }

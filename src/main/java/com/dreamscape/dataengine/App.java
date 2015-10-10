@@ -8,6 +8,7 @@ import com.dreamscape.dataengine.processes.PopulateGoogleFinancialsData;
 import com.dreamscape.dataengine.processes.CalculateScores;
 import com.dreamscape.dataengine.processes.PopulateKeyStatisticsData;
 import com.dreamscape.dataengine.processes.PortfolioCreator;
+import dreamscape.analysisengine.UtilitySqlQueries;
 import java.io.File;
 import java.io.IOException;
 
@@ -23,7 +24,7 @@ public class App
             {
                 // Running with hard-coded values...
                 fileName = "C:\\Users\\Jared\\Documents\\NetBeansProjects\\DataEngine\\src\\main\\resources\\Russell3000Companies6-15.txt";
-                process = "portfolioCreator";
+                process = "calculateScores";
             }
             else // Running from command line
             {
@@ -47,7 +48,8 @@ public class App
                     populateKeyStats.populateAll(new File(fileName));
                     break;
                 case "calculateScores":
-                    CalculateScores.calculateAllScores(new File(fileName));
+                    Long portfolioId = -1L; // Russell 3000 with data populated on 8/31/15
+                    CalculateScores.calculateAllScores(UtilitySqlQueries.getSecuritiesByPortfolioId(portfolioId));
                     break;
                 case "portfolioCreator":
                     PortfolioCreator.createPortfolio();

@@ -21,8 +21,9 @@ import java.util.List;
 public class CalculateScores {
     private static final double normalUpperBound = 10.0 / 3.0;
     
-    public static void calculateAllScores(File fileInCSVFormat)
+    public List<Security> getSecurities(File fileInCSVFormat)
     {
+        List<Security> securities = new ArrayList<>();
         BufferedReader br = null;
         List<String> tickerList = null;
         try{
@@ -40,14 +41,25 @@ public class CalculateScores {
             System.exit(0);
         }
         SecurityDAO dao = new SecurityDAOHibernateImpl();
+        
         for(String ticker : tickerList)
         {
             Security s = dao.retrieve(ticker);
+            securities.add(s);
+        }
+        
+        return securities;
+    }
+    public static void calculateAllScores(List<Security> securities)
+    {
+        SecurityDAO dao = new SecurityDAOHibernateImpl();
+        for(Security s : securities)
+        {
             Double valueScore = calculateValueScore(s);
             Double assetScore = calculateAssetScore(s);
             
-            List<String> columns = new ArrayList<String>();
-            List<Object> scores = new ArrayList<Object>();
+            List<String> columns = new ArrayList<>();
+            List<Double> scores = new ArrayList<>();
             
             columns.add("valueScore");
             scores.add(valueScore);
@@ -58,31 +70,28 @@ public class CalculateScores {
         }
     }
     
-    public static double calculateValueScore(Security security)
+    public static Double calculateValueScore(Security security)
     {
-        double ebitdaEv = 10.0;
-        double priceToBook = 10.0;
+        //double ebitdaEv = 10.0;
+        //double priceToBook = 10.0;
         
+        Double valueScore = null;
         
-        if (!String.valueOf(security.getEvToEBITDA()).equals("NaN"))
-            ebitdaEv = security.getEvToEBITDA();
-        
-        if(!String.valueOf(security.getPriceBook()).equals("NaN"))
-            priceToBook = security.getPriceBook();
-        
-        double valueScore = ( (1 - ( Math.abs(ebitdaEv / 10))) + (1 - (priceToBook / 10)) ) * 2;
+        if (security.getEvToEBITDA() != null && security.getPriceBook() != null)
+        {
+            valueScore = ( (1 - ( Math.abs(security.getEvToEBITDA() / 10))) + (1 - (security.getPriceBook() / 10)) ) * 2;
             //System.out.println("EV/EBITDA: " + security.geteVToEBITDA() + " Price-to-Book: " + security.getPriceToBook() + 
             //        " EV/EBITDA Component: " + (1 - ( Math.abs(security.geteVToEBITDA() / 10))) + 
             //        " Price-to-Book Component: " + (1 - (security.getPriceToBook() / 10)));
-            
             if ( valueScore > normalUpperBound )
                 valueScore = fitToScale( valueScore );
+        }
             
             //System.out.println("Value Score: " + valueScore);
 //            System.out.println();
 //            System.out.println();            
             
-            return valueScore;
+        return valueScore;
     }
 //    public double calculateEfficiencyScore()
 //    {
@@ -200,9 +209,11 @@ public class CalculateScores {
 //            return efficiencyScore;
 //        
 //    }
-    public static double calculateAssetScore(Security security)
+    public static Double calculateAssetScore(Security security)
     {
+        if(security.getTotalCash() != null && security.getTotalDebt() != null && security.getMarketCap() != null && security.getCurrentRatio() != null)
             return ( ( ( security.getTotalCash() - security.getTotalDebt() ) /  security.getMarketCap() ) + ( security.getCurrentRatio() / 10 ));
+        return null;
     }
 //    public double calculateGrowthScore()
 //    {

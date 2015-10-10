@@ -79,7 +79,7 @@ public class PopulateGoogleFinancialsData {
        
                 List<String> columns = new ArrayList<>();
                 
-                List<Object> values = new ArrayList<>();
+                List<Double> values = new ArrayList<>();
                 
                 Double returnOnIC = calculateReturnOnIC(financials);
                 
