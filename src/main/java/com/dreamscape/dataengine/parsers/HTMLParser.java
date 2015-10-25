@@ -7,7 +7,9 @@
 package com.dreamscape.dataengine.parsers;
 
 import com.dreamscape.dataengine.domain.Metric;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,7 +25,7 @@ public class HTMLParser extends Parser{
     private static final String ratioPattern = ">((N\\/A)|(\\d+:\\d+))<";
     private static final String datePattern = ">((N\\/A)|([A-Z]{1}[a-z]{2} \\d{1,2}, \\d{4}))<";
     private static final String accountingNumberPattern = ">((-)|(-?\\d{1,3}(,\\d{3})*(\\.\\d+)?))<";
-    
+    private static final String listTerminationPattern = ".*<\\/tr>";
     
     protected static Map<String, Metric> sourceMetrics = new HashMap<>();
     protected BlockReader reader;
@@ -45,31 +47,64 @@ public class HTMLParser extends Parser{
         Pattern p = metric.getPattern();
         //System.out.println(p.toString());
         
-        boolean matchFound = false;
-        Matcher matcher;
-        
         String textToTest = reader.getRemainingBlock();
         String rawText = metric.getRawText();
         
         int beginningIndex = textToTest.indexOf(rawText);
 
-        int i = beginningIndex + 1;
-        String currentBlock;
-        while(!matchFound)
+        value = findNextValue(textToTest, beginningIndex, p, metric.getType(), this.reader, metric.isList());
+        
+        return value;
+    }
+    private static Object findNextValue(String textBlock, int startIndex, Pattern p, String metricType, BlockReader r, boolean isList)
+    {
+        Matcher matcher;
+        int i = startIndex + 1;
+        String textToTest;
+        
+        boolean matchFound = false;
+        Object value = null;
+        if(isList)
         {
-            //System.out.println(beginningIndex);
-            currentBlock = (textToTest.substring(beginningIndex, i));
-            matcher = p.matcher(currentBlock);
-            
-            //System.out.println(currentBlock);
-            
-            if(matcher.matches())
+            Object currentValue;
+            List valueList = new ArrayList<>();
+            boolean hasMoreItems = true;
+            while(hasMoreItems)
             {
-                value = extractValue(currentBlock, metric.getType());
-                matchFound = true;
-                reader.setPosition(reader.getPosition() + i);
+                textToTest = textBlock.substring(startIndex, i);
+                matcher = p.matcher(textToTest);
+                
+                if(matcher.matches())
+                {
+                    currentValue = extractValue(textToTest, metricType);
+                    valueList.add(currentValue);
+                    r.setPosition(r.getPosition() + i);
+                }
+                
+                if(Pattern.matches(listTerminationPattern, textToTest))
+                    hasMoreItems = false;
+                
+                i++;
             }
-            i++;
+            return valueList;
+        }
+        else
+        {
+            while(matchFound == false)
+            {
+                textToTest = textBlock.substring(startIndex, i);
+                matcher = p.matcher(textToTest);
+                
+                if(matcher.matches())
+                {
+                    value = extractValue(textToTest, metricType);
+                    matchFound = true;
+                    
+                    r.setPosition(r.getPosition() + i);
+                }
+                
+                i++;
+            }
         }
         return value;
     }

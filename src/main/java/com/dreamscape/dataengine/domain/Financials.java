@@ -6,6 +6,8 @@
 
 package com.dreamscape.dataengine.domain;
 
+import java.util.List;
+
 /**
  *
  * @author Jared
@@ -13,6 +15,7 @@ package com.dreamscape.dataengine.domain;
 public class Financials {
     private String ticker;
     private Double operatingIncome;
+    private List<Double> quarterlyEarnings;
     private Double goodwill;
     private Double intangibleAssets;
     private Double totalAssets;
@@ -35,6 +38,14 @@ public class Financials {
 
     public void setOperatingIncome(Double operatingIncome) {
         this.operatingIncome = operatingIncome;
+    }
+
+    public List<Double> getQuarterlyEarnings() {
+        return quarterlyEarnings;
+    }
+
+    public void setQuarterlyEarnings(List<Double> quarterlyEarnings) {
+        this.quarterlyEarnings = quarterlyEarnings;
     }
 
     public Double getGoodwill() {

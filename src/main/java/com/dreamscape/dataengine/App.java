@@ -24,7 +24,7 @@ public class App
             {
                 // Running with hard-coded values...
                 fileName = "C:\\Users\\Jared\\Documents\\NetBeansProjects\\DataEngine\\src\\main\\resources\\Russell3000Companies6-15.txt";
-                process = "calculateScores";
+                process = "populateGoogleFinancials";
             }
             else // Running from command line
             {

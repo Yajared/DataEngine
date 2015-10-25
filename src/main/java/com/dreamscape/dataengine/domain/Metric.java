@@ -17,6 +17,7 @@ public class Metric {
     private Pattern pattern;
     private String rawText;
     private String name;
+    private boolean list;
 
     public String getName() {
         return name;
@@ -58,5 +59,14 @@ public class Metric {
     public void setRawText(String rawText) {
         this.rawText = rawText;
     }
+
+    public boolean isList() {
+        return list;
+    }
+
+    public void setList(boolean list) {
+        this.list = list;
+    }
+    
     
 }

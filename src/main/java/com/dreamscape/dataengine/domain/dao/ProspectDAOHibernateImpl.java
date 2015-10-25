@@ -141,6 +141,8 @@ public class ProspectDAOHibernateImpl implements ProspectDAO{
                 updateQuery.append(" p.perf10 = '"+ prospect.getPerf10() + "',");
             if(prospect.getPerf20() != null && prospect.getUpdateFlags().get("Perf20") != null)
                 updateQuery.append(" p.perf20 = '"+ prospect.getPerf20() + "',");
+            if(prospect.getPerf30() != null && prospect.getUpdateFlags().get("Perf30") != null)
+                updateQuery.append(" p.perf30 = '"+ prospect.getPerf30() + "',");
             if(prospect.getPerf40() != null && prospect.getUpdateFlags().get("Perf40") != null)
                 updateQuery.append(" p.perf40 = '"+ prospect.getPerf40() + "',");
             if(prospect.getPerf60() != null && prospect.getUpdateFlags().get("Perf60") != null)

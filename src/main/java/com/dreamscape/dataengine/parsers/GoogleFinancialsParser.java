@@ -12,6 +12,7 @@ import com.dreamscape.dataengine.exceptions.PageDoesNotExistException;
 import static com.dreamscape.dataengine.parsers.HTMLParser.generateRegEx;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -51,6 +52,7 @@ public class GoogleFinancialsParser extends HTMLParser {
             boolean bname = false;
             boolean btype = false;
             boolean bpattern = false;
+            boolean blist = false;
             
             StringBuilder buf = new StringBuilder();
             
@@ -76,6 +78,11 @@ public class GoogleFinancialsParser extends HTMLParser {
                     //System.out.println("Starting Pattern....");
                     bpattern = true;
                 }
+                
+                else if (qName.equalsIgnoreCase("LIST")){
+                    //System.out.println("Starting Pattern....");
+                    blist = true;
+                }
             }
  
             @Override
@@ -93,6 +100,7 @@ public class GoogleFinancialsParser extends HTMLParser {
                     metric.setType( new String(ch, start, length));
                     btype = false;
                 }
+
                 else if (bpattern){
                     metric.setRawText(new String(ch, start, length));
                     //System.out.println("Pattern Raw Text: " + metric.getRawText());
@@ -103,6 +111,11 @@ public class GoogleFinancialsParser extends HTMLParser {
                     bpattern = false;
                 }
                 
+                else if (blist){
+                    metric.setList(Boolean.parseBoolean(new String(ch, start, length)));
+                    
+                    blist = false;
+                }
             }
          };
 
@@ -136,6 +149,7 @@ public class GoogleFinancialsParser extends HTMLParser {
         financials.setTicker(ticker);
         
         financials.setOperatingIncome((Double)parseValue(sourceMetrics.get("operatingIncome")));
+        financials.setQuarterlyEarnings((List<Double>)parseValue(sourceMetrics.get("quarterlyEarnings")));
         financials.setCashAndSTInvestments((Double)parseValue(sourceMetrics.get("cashAndSTInvestments")));
         financials.setGoodwill((Double)parseValue(sourceMetrics.get("goodwill")));
         financials.setIntangibleAssets((Double)parseValue(sourceMetrics.get("intangibleAssets")));
@@ -143,6 +157,11 @@ public class GoogleFinancialsParser extends HTMLParser {
         financials.setOtherLongTermAssets((Double)parseValue(sourceMetrics.get("otherLongTermAssets")));
         financials.setTotalAssets((Double)parseValue(sourceMetrics.get("totalAssets")));
         financials.setTotalCurrentLiabilities((Double)parseValue(sourceMetrics.get("totalCurrentLiabilities")));
+        
+        for(Double d : financials.getQuarterlyEarnings())
+            System.out.println(d.toString());
+        
+        System.exit(0);
         
         return financials;
     }

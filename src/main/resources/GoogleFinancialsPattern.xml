@@ -6,6 +6,12 @@
 <pattern>Operating Income</pattern>
 </metric>
 <metric>
+<name>quarterlyEarnings</name>
+<type>accountingNumber</type>
+<list>true</list>
+<pattern>Income Before Tax</pattern>
+</metric>
+<metric>
 <name>goodwill</name>
 <type>accountingNumber</type>
 <pattern>Goodwill, Net</pattern>
