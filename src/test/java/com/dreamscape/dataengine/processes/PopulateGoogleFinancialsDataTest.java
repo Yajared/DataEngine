@@ -55,12 +55,32 @@ public class PopulateGoogleFinancialsDataTest {
     }
     
     @Test
-    public void calculateReturnOnICDoesNotMakeDoubleNegativeDivisionPositive(){
+    public void calculateEarningsGrowthQoQMRQLargerThanLastQuarterBothPositive(){
         
     }
     
     @Test
-    public void calculateMFIRatioDoesNotMakeDoubleNegativeDivisionPositive(){
+    public void calculateEarningsGrowthQoQMRQSmallerThanLastQuarterBothPositive(){
+        
+    }
+    
+    @Test
+    public void calculateEarningsGrowthQoQMRQLargerThanLastQuarterLastQtrNeg(){
+        
+    }
+    
+    @Test
+    public void calculateEarningsGrowthQoQMRQSmallerThanLastQuarterMRQNeg(){
+        
+    }
+    
+    @Test
+    public void calculateEarningsGrowthQoQMRQLargerThanLastQuarterBothNeg(){
+        
+    }
+    
+    @Test
+    public void calculateEarningsGrowthQoQMRQSmallerThanLastQuarterBothNeg(){
         
     }
 }

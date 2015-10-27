@@ -158,10 +158,10 @@ public class GoogleFinancialsParser extends HTMLParser {
         financials.setTotalAssets((Double)parseValue(sourceMetrics.get("totalAssets")));
         financials.setTotalCurrentLiabilities((Double)parseValue(sourceMetrics.get("totalCurrentLiabilities")));
         
+        System.out.println(ticker);
+        System.out.println("--------");
         for(Double d : financials.getQuarterlyEarnings())
             System.out.println(d.toString());
-        
-        System.exit(0);
         
         return financials;
     }

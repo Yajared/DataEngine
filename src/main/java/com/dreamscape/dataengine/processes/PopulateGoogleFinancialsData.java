@@ -21,12 +21,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import org.hibernate.HibernateException;
 
 /**
  *
  * @author Jared
  */
 public class PopulateGoogleFinancialsData {
+    final static int qtrOverQtrGrowth = 0;
+    final static int lastTwoQtrGrowth = 1;
+    final static int qtrVsLastYearGrowth = 2;
+    
     public void populateAll (File tickerNamesInCSVFormat) throws IOException{
         BufferedReader br = null;
         try{
@@ -44,12 +49,23 @@ public class PopulateGoogleFinancialsData {
             for(int i = 0 ; i < numberOfRows;i++){
                 String[] rowOfTickers = tickers.get(i);
                 
-                for(int j = 2499;j < rowOfTickers.length; j++){
+                for(int j = 0;j < rowOfTickers.length; j++){
                     System.out.println(i + j);
                     ticker = rowOfTickers[j];
-                    tickerParsed = populateMFI(ticker, p);
-                    if(tickerParsed == false){
-                        unparseableTickers.add(ticker);
+                    
+                    GoogleFinancialsConnectionManager connectionManager = new GoogleFinancialsConnectionManager();
+                    String pageAsString = connectionManager.downloadFinancialsData(ticker);
+        
+                    if(pageAsString != null){
+                        Financials financials = p.parseFinancials(ticker, pageAsString);
+            
+                        if(financials != null){
+                            
+                            tickerParsed = updateCompanyFinancials(ticker, financials);
+                            if(tickerParsed == false){
+                                unparseableTickers.add(ticker);
+                            }
+                        }
                     }
                 }
             }
@@ -67,37 +83,40 @@ public class PopulateGoogleFinancialsData {
         }
     }
     
-    private boolean populateMFI(String ticker, GoogleFinancialsParser parser) throws IOException{
-        GoogleFinancialsConnectionManager connectionManager = new GoogleFinancialsConnectionManager();
-        String pageAsString = connectionManager.downloadFinancialsData(ticker);
+    private boolean updateCompanyFinancials(String ticker, Financials financials){    
+        SecurityDAO securityDAO = new SecurityDAOHibernateImpl();
+        Security s = securityDAO.retrieve(ticker);
         
-        if(pageAsString != null){
-            Financials financials = parser.parseFinancials(ticker, pageAsString);
-            
-            if(financials != null){
-                SecurityDAO securityDAO = new SecurityDAOHibernateImpl();
-       
-                List<String> columns = new ArrayList<>();
-                
-                List<Double> values = new ArrayList<>();
-                
-                Double returnOnIC = calculateReturnOnIC(financials);
-                
-                Security s = securityDAO.retrieve(ticker);
-                
-                Double mfRatio = calculateMFRatio(returnOnIC, s.getEvToEBITDA());
-                
-                columns.add("returnOnIC");
-                columns.add("magicFormulaRatio");
-                
-                values.add(returnOnIC);
-                values.add(mfRatio);
-                
-                securityDAO.update(ticker, columns, values);
-                return true;
-            }
+        Double returnOnIC = calculateReturnOnIC(financials);
+        Double mfRatio = calculateMFRatio(returnOnIC, s.getEvToEBITDA());
+        Double[] earningsGrowth = calculateEarningsGrowth(financials.getQuarterlyEarnings());
+        
+        List<String> columns = new ArrayList<>();        
+        List<Double> values = new ArrayList<>();
+        
+        columns.add("returnOnIC");
+        columns.add("magicFormulaRatio");
+        columns.add("qtrOverQtrEarningsGrowth");
+        columns.add("lastTwoQtrEarningsGrowth");
+        columns.add("qtrVsLastYearEarningsGrowth");
+        
+        values.add(returnOnIC);
+        values.add(mfRatio);
+        values.add(earningsGrowth[qtrOverQtrGrowth]);
+        values.add(earningsGrowth[lastTwoQtrGrowth]);
+        values.add(earningsGrowth[qtrVsLastYearGrowth]);
+        
+        try{
+            //securityDAO.update(ticker, columns, values);
+            for(int i = 0; i < columns.size(); i++)
+                System.out.println("Column: " + columns.get(i) + " Value: " + values.get(i));
         }
-        return false;
+        catch(HibernateException e)
+        {
+            System.err.println(e.getMessage());
+            return false;
+        }
+        return true;
     }
     
     private static Double calculateReturnOnIC(Financials financials){
@@ -125,5 +144,29 @@ public class PopulateGoogleFinancialsData {
                 MFRatio *= -1;
         }
         return MFRatio;
+    }
+    
+    protected static Double[] calculateEarningsGrowth(List<Double> earnings)
+    {
+        Double[] earningsGrowth = new Double[3];
+        if(earnings.get(0) != null)
+        {
+            Double divisor = earnings.get(0);
+            if(divisor < 0) // negative Divisor so we'll need to make it positive
+                divisor *= -1;
+            
+            Double qtrOverQtr = earnings.get(1) != null ? 
+                ( earnings.get(0) - earnings.get(1) ) / divisor : null;
+            Double lastTwoQtr = earnings.get(1) != null && earnings.get(2) != null ?
+                ( ( earnings.get(0) - earnings.get(1) ) + ( earnings.get(1) - earnings.get(2) ) ) / divisor: null;
+            Double qtrVsLastYear = earnings.get(4) != null ?
+                ( earnings.get(0) - earnings.get(4) ) / divisor : null;
+            
+            earningsGrowth[qtrOverQtrGrowth] = qtrOverQtr;
+            earningsGrowth[lastTwoQtrGrowth] = lastTwoQtr;
+            earningsGrowth[qtrVsLastYearGrowth] = qtrVsLastYear;
+        }
+
+        return earningsGrowth;
     }
 }

@@ -103,7 +103,7 @@ public class SecurityDAOHibernateImpl implements SecurityDAO {
         catch(HibernateException e)
         {
             System.err.println(e.getMessage());
-            throw new RuntimeException(e);
+            throw e;
         }
         finally{
             session.disconnect();
