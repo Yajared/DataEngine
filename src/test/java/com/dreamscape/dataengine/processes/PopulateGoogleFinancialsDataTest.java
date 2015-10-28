@@ -8,12 +8,16 @@ package com.dreamscape.dataengine.processes;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import static com.dreamscape.dataengine.processes.PopulateGoogleFinancialsData.*;
 
 /**
  *
@@ -56,31 +60,91 @@ public class PopulateGoogleFinancialsDataTest {
     
     @Test
     public void calculateEarningsGrowthQoQMRQLargerThanLastQuarterBothPositive(){
+        Double mrq = 7.0;
+        Double prevQtr = 5.0;
         
+        Double[] qtrEarnings = new Double[5];
+        
+        qtrEarnings[thisQtr] = mrq;
+        qtrEarnings[lastQtr] = prevQtr;
+
+        Double[] earningsGrowth = PopulateGoogleFinancialsData.calculateEarningsGrowth(Arrays.asList(qtrEarnings));
+        
+        assertEquals(0.4, earningsGrowth[qtrOverQtrGrowth], .0001);
     }
     
     @Test
     public void calculateEarningsGrowthQoQMRQSmallerThanLastQuarterBothPositive(){
+        Double mrq = 2.0;
+        Double prevQtr = 6.0;
         
+        Double[] qtrEarnings = new Double[5];
+        
+        qtrEarnings[thisQtr] = mrq;
+        qtrEarnings[lastQtr] = prevQtr;
+
+        Double[] earningsGrowth = PopulateGoogleFinancialsData.calculateEarningsGrowth(Arrays.asList(qtrEarnings));
+        
+        assertEquals(-0.6667, earningsGrowth[qtrOverQtrGrowth], .0001);
     }
     
     @Test
     public void calculateEarningsGrowthQoQMRQLargerThanLastQuarterLastQtrNeg(){
+        Double mrq = 2.0;
+        Double prevQtr = -4.0;
         
+        Double[] qtrEarnings = new Double[5];
+        
+        qtrEarnings[thisQtr] = mrq;
+        qtrEarnings[lastQtr] = prevQtr;
+
+        Double[] earningsGrowth = PopulateGoogleFinancialsData.calculateEarningsGrowth(Arrays.asList(qtrEarnings));
+        
+        assertEquals(1.5, earningsGrowth[qtrOverQtrGrowth], .0001);
     }
     
     @Test
     public void calculateEarningsGrowthQoQMRQSmallerThanLastQuarterMRQNeg(){
+        Double mrq = -3.0;
+        Double prevQtr = 5.0;
         
+        Double[] qtrEarnings = new Double[5];
+        
+        qtrEarnings[thisQtr] = mrq;
+        qtrEarnings[lastQtr] = prevQtr;
+
+        Double[] earningsGrowth = PopulateGoogleFinancialsData.calculateEarningsGrowth(Arrays.asList(qtrEarnings));
+        
+        assertEquals(-1.6, earningsGrowth[qtrOverQtrGrowth], .0001);
     }
     
     @Test
     public void calculateEarningsGrowthQoQMRQLargerThanLastQuarterBothNeg(){
+        Double mrq = -3.0;
+        Double prevQtr = -5.0;
         
+        Double[] qtrEarnings = new Double[5];
+        
+        qtrEarnings[thisQtr] = mrq;
+        qtrEarnings[lastQtr] = prevQtr;
+
+        Double[] earningsGrowth = PopulateGoogleFinancialsData.calculateEarningsGrowth(Arrays.asList(qtrEarnings));
+        
+        assertEquals(.4, earningsGrowth[qtrOverQtrGrowth], .0001);
     }
     
     @Test
     public void calculateEarningsGrowthQoQMRQSmallerThanLastQuarterBothNeg(){
+        Double mrq = -7.0;
+        Double prevQtr = -5.0;
         
+        Double[] qtrEarnings = new Double[5];
+        
+        qtrEarnings[thisQtr] = mrq;
+        qtrEarnings[lastQtr] = prevQtr;
+
+        Double[] earningsGrowth = PopulateGoogleFinancialsData.calculateEarningsGrowth(Arrays.asList(qtrEarnings));
+        
+        assertEquals(-.4, earningsGrowth[qtrOverQtrGrowth], .0001);
     }
 }

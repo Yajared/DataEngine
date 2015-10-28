@@ -103,6 +103,4 @@ public class Financials {
     public void setTotalCurrentLiabilities(Double totalCurrentLiabilities) {
         this.totalCurrentLiabilities = totalCurrentLiabilities;
     }
-    
-    
 }

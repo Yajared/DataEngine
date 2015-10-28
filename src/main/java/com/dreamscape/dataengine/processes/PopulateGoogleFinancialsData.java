@@ -28,10 +28,15 @@ import org.hibernate.HibernateException;
  * @author Jared
  */
 public class PopulateGoogleFinancialsData {
-    final static int qtrOverQtrGrowth = 0;
-    final static int lastTwoQtrGrowth = 1;
-    final static int qtrVsLastYearGrowth = 2;
+    protected final static int qtrOverQtrGrowth = 0;
+    protected final static int lastTwoQtrGrowth = 1;
+    protected final static int qtrVsLastYearGrowth = 2;
     
+    protected final static int thisQtr = 0;
+    protected final static int lastQtr = 1;
+    protected final static int twoQtrsBack = 2;
+    protected final static int nineMonthsBack = 3;
+    protected final static int thisQtrLastYear = 4;
     public void populateAll (File tickerNamesInCSVFormat) throws IOException{
         BufferedReader br = null;
         try{
@@ -149,23 +154,34 @@ public class PopulateGoogleFinancialsData {
     protected static Double[] calculateEarningsGrowth(List<Double> earnings)
     {
         Double[] earningsGrowth = new Double[3];
-        if(earnings.get(0) != null)
+        
+        Double divisor1 = earnings.get(1);
+        Double divisor2 = earnings.get(2);
+        Double divisor3 = earnings.get(4);
+        
+        if(divisor1 != null && divisor1 < 0)
         {
-            Double divisor = earnings.get(0);
-            if(divisor < 0) // negative Divisor so we'll need to make it positive
-                divisor *= -1;
+            divisor1 *= -1;
+        }
+        if(divisor2 != null && divisor2 < 0)
+        {
+            divisor2 *= -1;
+        }
+        if (divisor3 != null && divisor3 < 0)
+        {
+            divisor3 *= -1;
+        }
             
-            Double qtrOverQtr = earnings.get(1) != null ? 
-                ( earnings.get(0) - earnings.get(1) ) / divisor : null;
-            Double lastTwoQtr = earnings.get(1) != null && earnings.get(2) != null ?
-                ( ( earnings.get(0) - earnings.get(1) ) + ( earnings.get(1) - earnings.get(2) ) ) / divisor: null;
+            Double qtrOverQtr = earnings.get(0) != null && earnings.get(1) != null ? 
+                ( earnings.get(0) - earnings.get(1) ) / divisor1 : null;
+            Double lastTwoQtr = earnings.get(0) != null && earnings.get(1) != null && earnings.get(2) != null ?
+                ( ( ( earnings.get(0) - earnings.get(1) ) / divisor1 ) + ( ( earnings.get(0) - earnings.get(2) ) / divisor2 ) ): null;
             Double qtrVsLastYear = earnings.get(4) != null ?
-                ( earnings.get(0) - earnings.get(4) ) / divisor : null;
+                ( earnings.get(0) - earnings.get(4) ) / divisor3 : null;
             
             earningsGrowth[qtrOverQtrGrowth] = qtrOverQtr;
             earningsGrowth[lastTwoQtrGrowth] = lastTwoQtr;
             earningsGrowth[qtrVsLastYearGrowth] = qtrVsLastYear;
-        }
 
         return earningsGrowth;
     }
