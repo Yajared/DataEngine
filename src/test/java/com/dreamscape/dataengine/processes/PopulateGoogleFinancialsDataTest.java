@@ -120,7 +120,7 @@ public class PopulateGoogleFinancialsDataTest {
     
     @Test
     public void calculateEarningsGrowthQoQMRQLargerThanLastQuarterBothNeg(){
-        Double mrq = -3.0;
+        Double mrq = -4.0;
         Double prevQtr = -5.0;
         
         Double[] qtrEarnings = new Double[5];
@@ -130,13 +130,13 @@ public class PopulateGoogleFinancialsDataTest {
 
         Double[] earningsGrowth = PopulateGoogleFinancialsData.calculateEarningsGrowth(Arrays.asList(qtrEarnings));
         
-        assertEquals(.4, earningsGrowth[qtrOverQtrGrowth], .0001);
+        assertEquals(.2, earningsGrowth[qtrOverQtrGrowth], .0001);
     }
     
     @Test
     public void calculateEarningsGrowthQoQMRQSmallerThanLastQuarterBothNeg(){
         Double mrq = -7.0;
-        Double prevQtr = -5.0;
+        Double prevQtr = -1.0;
         
         Double[] qtrEarnings = new Double[5];
         
@@ -145,6 +145,49 @@ public class PopulateGoogleFinancialsDataTest {
 
         Double[] earningsGrowth = PopulateGoogleFinancialsData.calculateEarningsGrowth(Arrays.asList(qtrEarnings));
         
-        assertEquals(-.4, earningsGrowth[qtrOverQtrGrowth], .0001);
+        assertEquals(-6, earningsGrowth[qtrOverQtrGrowth], .0001);
+    }
+    
+    @Test
+    public void calculateEarningsGrowthCanDealWithZeros()
+    {
+        Double mrq = 0.0;
+        Double prevQtr = 0.0;
+        
+        Double[] qtrEarnings = new Double[5];
+        
+        qtrEarnings[thisQtr] = mrq;
+        qtrEarnings[lastQtr] = prevQtr;
+
+        Double[] earningsGrowth = PopulateGoogleFinancialsData.calculateEarningsGrowth(Arrays.asList(qtrEarnings));
+        
+        assertEquals(0.00, earningsGrowth[qtrOverQtrGrowth], .0001);
+    }
+    
+    @Test
+    public void calculateEarningsGrowthCanGetAverage()
+    {
+        Double mrq = -7.0;
+        Double prevQtr = -1.0;
+        Double twoQtrsAgo = -4.0;
+        Double nineMonthsAgo = -5.0;
+        Double thisQtrAYearAgo = 8.0;
+        
+        Double[] qtrEarnings = new Double[5];
+        
+        qtrEarnings[thisQtr] = mrq;
+        qtrEarnings[lastQtr] = prevQtr;
+        qtrEarnings[twoQtrsBack] = twoQtrsAgo;
+        qtrEarnings[nineMonthsBack] = nineMonthsAgo;
+        qtrEarnings[thisQtrLastYear] = thisQtrAYearAgo;
+        
+        Double[] earningsGrowth = PopulateGoogleFinancialsData.calculateEarningsGrowth(Arrays.asList(qtrEarnings));
+        
+        assertEquals(-6.00, earningsGrowth[qtrOverQtrGrowth], .0001);
+        assertEquals(-0.75, earningsGrowth[lastTwoQtrGrowth], .0001);
+        assertEquals(-0.4, earningsGrowth[lastNineMonthsGrowth], .0001);
+        assertEquals(-1.875, earningsGrowth[qtrVsLastYearGrowth], .0001);
+        
+        assertEquals(-2.25625, earningsGrowth[compositeGrowth], .0001);
     }
 }

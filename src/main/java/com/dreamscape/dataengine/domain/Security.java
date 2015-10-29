@@ -20,8 +20,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.joda.time.DateTime;
 
-
-
 /**
  *
  * @author Jared
@@ -86,6 +84,11 @@ public class Security {
     @Column(name="returnOnIc")
     private Double returnOnInvestedCapital;
     private Double magicFormulaRatio;
+    private Double qtrOverQtrEarningsGrowth;
+    private Double lastTwoQtrEarningsGrowth;
+    private Double lastNineMonthsEarningsGrowth;
+    private Double qtrVsLastYearEarningsGrowth;
+    private Double compositeEarningsGrowth;
     
     @Transient // TODO: Remove these and actually save the dates
     private DateTime dividendDate;
@@ -643,6 +646,44 @@ public class Security {
     public void setMagicFormulaRatio(Double magicFormulaRatio) {
         this.magicFormulaRatio = magicFormulaRatio;
     }
-    
-    
+
+    public Double getQtrOverQtrEarningsGrowth() {
+        return qtrOverQtrEarningsGrowth;
+    }
+
+    public void setQtrOverQtrEarningsGrowth(Double qtrOverQtrEarningsGrowth) {
+        this.qtrOverQtrEarningsGrowth = qtrOverQtrEarningsGrowth;
+    }
+
+    public Double getLastTwoQtrEarningsGrowth() {
+        return lastTwoQtrEarningsGrowth;
+    }
+
+    public void setLastTwoQtrEarningsGrowth(Double lastTwoQtrEarningsGrowth) {
+        this.lastTwoQtrEarningsGrowth = lastTwoQtrEarningsGrowth;
+    }
+
+    public Double getLastNineMonthsEarningsGrowth() {
+        return lastNineMonthsEarningsGrowth;
+    }
+
+    public void setLastNineMonthsEarningsGrowth(Double lastNineMonthsEarningsGrowth) {
+        this.lastNineMonthsEarningsGrowth = lastNineMonthsEarningsGrowth;
+    }
+
+    public Double getQtrVsLastYearEarningsGrowth() {
+        return qtrVsLastYearEarningsGrowth;
+    }
+
+    public void setQtrVsLastYearEarningsGrowth(Double qtrVsLastYearEarningsGrowth) {
+        this.qtrVsLastYearEarningsGrowth = qtrVsLastYearEarningsGrowth;
+    }
+
+    public Double getCompositeEarningsGrowth() {
+        return compositeEarningsGrowth;
+    }
+
+    public void setCompositeEarningsGrowth(Double compositeEarningsGrowth) {
+        this.compositeEarningsGrowth = compositeEarningsGrowth;
+    }
 }

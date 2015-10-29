@@ -12,6 +12,7 @@ import com.dreamscape.dataengine.domain.Security;
 import com.dreamscape.dataengine.domain.dao.SecurityDAO;
 import com.dreamscape.dataengine.domain.dao.SecurityDAOHibernateImpl;
 import com.dreamscape.utillibrary.parsers.CSVParser;
+import com.dreamscape.utillibrary.numeric.NumericUtils;
 import com.dreamscape.dataengine.parsers.GoogleFinancialsParser;
 import java.io.BufferedReader;
 import java.io.File;
@@ -20,6 +21,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.hibernate.HibernateException;
 
@@ -30,7 +32,9 @@ import org.hibernate.HibernateException;
 public class PopulateGoogleFinancialsData {
     protected final static int qtrOverQtrGrowth = 0;
     protected final static int lastTwoQtrGrowth = 1;
-    protected final static int qtrVsLastYearGrowth = 2;
+    protected final static int lastNineMonthsGrowth = 2;
+    protected final static int qtrVsLastYearGrowth = 3;
+    protected final static int compositeGrowth = 4;
     
     protected final static int thisQtr = 0;
     protected final static int lastQtr = 1;
@@ -54,7 +58,7 @@ public class PopulateGoogleFinancialsData {
             for(int i = 0 ; i < numberOfRows;i++){
                 String[] rowOfTickers = tickers.get(i);
                 
-                for(int j = 0;j < rowOfTickers.length; j++){
+                for(int j = 500;j < /*rowOfTickers.length*/ 1000; j++){
                     System.out.println(i + j);
                     ticker = rowOfTickers[j];
                     
@@ -99,22 +103,26 @@ public class PopulateGoogleFinancialsData {
         List<String> columns = new ArrayList<>();        
         List<Double> values = new ArrayList<>();
         
-        columns.add("returnOnIC");
-        columns.add("magicFormulaRatio");
+        //columns.add("returnOnIC");
+        //columns.add("magicFormulaRatio");
         columns.add("qtrOverQtrEarningsGrowth");
         columns.add("lastTwoQtrEarningsGrowth");
+        columns.add("lastNineMonthsEarningsGrowth");
         columns.add("qtrVsLastYearEarningsGrowth");
+        columns.add("compositeEarningsGrowth");
         
-        values.add(returnOnIC);
-        values.add(mfRatio);
+        //values.add(returnOnIC);
+        //values.add(mfRatio);
         values.add(earningsGrowth[qtrOverQtrGrowth]);
         values.add(earningsGrowth[lastTwoQtrGrowth]);
+        values.add(earningsGrowth[lastNineMonthsGrowth]);
         values.add(earningsGrowth[qtrVsLastYearGrowth]);
-        
+        values.add(earningsGrowth[compositeGrowth]);
+                
         try{
-            //securityDAO.update(ticker, columns, values);
-            for(int i = 0; i < columns.size(); i++)
-                System.out.println("Column: " + columns.get(i) + " Value: " + values.get(i));
+            securityDAO.update(ticker, columns, values);
+//            for(int i = 0; i < columns.size(); i++)
+//                System.out.println("Column: " + columns.get(i) + " Value: " + values.get(i));
         }
         catch(HibernateException e)
         {
@@ -153,36 +161,25 @@ public class PopulateGoogleFinancialsData {
     
     protected static Double[] calculateEarningsGrowth(List<Double> earnings)
     {
-        Double[] earningsGrowth = new Double[3];
+        Double[] earningsGrowth = new Double[4];
+        Double total = 0.0;
+        int nonNullValueCount = 0;
+        for(int i = lastQtr; i < earnings.size(); i++)
+        {
+            earningsGrowth[i-1] = NumericUtils.calculateChange(earnings.get(i), earnings.get(thisQtr));
+            if(earningsGrowth[i-1] != null)
+            {
+                total = total + earningsGrowth[i-1];
+                nonNullValueCount++;
+            }
+        }
         
-        Double divisor1 = earnings.get(1);
-        Double divisor2 = earnings.get(2);
-        Double divisor3 = earnings.get(4);
+        Double average = total / nonNullValueCount;
+        ArrayList<Double> earningsGrowthAsList = new ArrayList<>();
+        earningsGrowthAsList.addAll((List<Double>)Arrays.asList(earningsGrowth));
+        earningsGrowthAsList.add(average);
+        earningsGrowth = (Double[])earningsGrowthAsList.toArray(new Double[5]);
         
-        if(divisor1 != null && divisor1 < 0)
-        {
-            divisor1 *= -1;
-        }
-        if(divisor2 != null && divisor2 < 0)
-        {
-            divisor2 *= -1;
-        }
-        if (divisor3 != null && divisor3 < 0)
-        {
-            divisor3 *= -1;
-        }
-            
-            Double qtrOverQtr = earnings.get(0) != null && earnings.get(1) != null ? 
-                ( earnings.get(0) - earnings.get(1) ) / divisor1 : null;
-            Double lastTwoQtr = earnings.get(0) != null && earnings.get(1) != null && earnings.get(2) != null ?
-                ( ( ( earnings.get(0) - earnings.get(1) ) / divisor1 ) + ( ( earnings.get(0) - earnings.get(2) ) / divisor2 ) ): null;
-            Double qtrVsLastYear = earnings.get(4) != null ?
-                ( earnings.get(0) - earnings.get(4) ) / divisor3 : null;
-            
-            earningsGrowth[qtrOverQtrGrowth] = qtrOverQtr;
-            earningsGrowth[lastTwoQtrGrowth] = lastTwoQtr;
-            earningsGrowth[qtrVsLastYearGrowth] = qtrVsLastYear;
-
         return earningsGrowth;
     }
 }
