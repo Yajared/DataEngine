@@ -120,17 +120,12 @@
     <dependency>
         <groupId>dreamscape</groupId>
         <artifactId>tradingDayInformation</artifactId>
-        <version>1.4</version>
+        <version>1.5</version>
     </dependency>
     <dependency>
         <groupId>dreamscape</groupId>
         <artifactId>utilLibrary</artifactId>
         <version>1.2</version>
-    </dependency>
-    <dependency>
-        <groupId>dreamscape</groupId>
-        <artifactId>AnalysisEngine</artifactId>
-        <version>1.0</version>
     </dependency>
   </dependencies>
   <build>

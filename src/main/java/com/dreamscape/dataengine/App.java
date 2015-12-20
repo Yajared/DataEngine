@@ -8,7 +8,7 @@ import com.dreamscape.dataengine.processes.PopulateGoogleFinancialsData;
 import com.dreamscape.dataengine.processes.CalculateScores;
 import com.dreamscape.dataengine.processes.PopulateKeyStatisticsData;
 import com.dreamscape.dataengine.processes.PortfolioCreator;
-import dreamscape.analysisengine.UtilitySqlQueries;
+import com.dreamscape.dataengine.utils.UtilitySqlQueries;
 import java.io.File;
 import java.io.IOException;
 

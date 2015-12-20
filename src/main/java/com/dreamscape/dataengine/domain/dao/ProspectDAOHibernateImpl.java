@@ -7,11 +7,13 @@
 package com.dreamscape.dataengine.domain.dao;
 
 import com.dreamscape.dataengine.domain.Prospect;
+import com.dreamscape.dataengine.domain.Security;
 import com.dreamscape.dataengine.domain.Ticker;
 import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import com.dreamscape.dataengine.persistence.HibernateUtil;
+import java.util.ArrayList;
 import org.hibernate.HibernateException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -116,6 +118,26 @@ public class ProspectDAOHibernateImpl implements ProspectDAO{
             session.disconnect();
         }
         return allProspects;
+    }
+    
+    public List<Prospect>retrieveProspectswithQuery(String query)
+    {
+        List<Prospect> prospects = new ArrayList<>();
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try{
+            session.beginTransaction();
+        
+            Query retrieveProspects = session.createQuery(query);
+            prospects = retrieveProspects.list();
+        }
+        catch(HibernateException e)
+        {
+            throw e;
+        }
+        finally{
+            session.close();
+        }
+        return prospects;
     }
     
     @Override

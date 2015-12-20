@@ -58,7 +58,7 @@ public class PopulateGoogleFinancialsData {
             for(int i = 0 ; i < numberOfRows;i++){
                 String[] rowOfTickers = tickers.get(i);
                 
-                for(int j = 500;j < /*rowOfTickers.length*/ 1000; j++){
+                for(int j = 2500;j < rowOfTickers.length; j++){
                     System.out.println(i + j);
                     ticker = rowOfTickers[j];
                     
@@ -103,7 +103,7 @@ public class PopulateGoogleFinancialsData {
         List<String> columns = new ArrayList<>();        
         List<Double> values = new ArrayList<>();
         
-        //columns.add("returnOnIC");
+        //columns.add("returnOnInvestedCapital");
         //columns.add("magicFormulaRatio");
         columns.add("qtrOverQtrEarningsGrowth");
         columns.add("lastTwoQtrEarningsGrowth");

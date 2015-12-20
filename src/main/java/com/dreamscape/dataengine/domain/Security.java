@@ -8,7 +8,6 @@ package com.dreamscape.dataengine.domain;
 
 //import com.dreamscape.tradingdayinformation.YahooFinanceHistoricalPriceConnectionManager;
 import org.apache.commons.lang3.StringUtils;
-import dreamscape.analysisengine.Feature;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Comparator;
@@ -81,7 +80,6 @@ public class Security {
     private Double forwardAnnualDividendYield;
     private Double fiveYearAvgDividendYield;
     private Double payoutRatio;
-    @Column(name="returnOnIc")
     private Double returnOnInvestedCapital;
     private Double magicFormulaRatio;
     private Double qtrOverQtrEarningsGrowth;
@@ -105,6 +103,14 @@ public class Security {
         
     }
     
+    @Override
+    public boolean equals(Object s){
+        if(s == null)
+            return false;
+        if(! (s instanceof Security) )
+            return false;
+        return this.ticker.equals(((Security)s).getTicker());
+    }
 //    public ArrayList<Double> getHistoricalPrices(){
 //        return this.historicalPrices;
 //    }
@@ -136,7 +142,7 @@ public class Security {
             throw e;
         }
     }
-    public static Comparator<Security> getComparatorForFeatureAndInitializeForSorting(Feature feature, List<Security> securities) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException
+    public static Comparator<Security> getComparatorForFeatureAndInitializeForSorting(com.dreamscape.dataengine.domain.Feature feature, List<Security> securities) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException
     {
         initializeForSorting(feature, securities);
         return new Comparator<Security>() {
