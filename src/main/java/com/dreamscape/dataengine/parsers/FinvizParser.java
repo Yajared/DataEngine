@@ -25,10 +25,11 @@ import java.util.regex.Pattern;
  */
 
 public class FinvizParser extends HTMLParser { //Finviz sold out... so now we have to implement a screen scraper to get ticker names
-    private static String startContent = "onmouseout=\"this.className='table-dark-row-cp';\" onclick=\"window.location='quote.ashx?";
+    private static String startContent = "<table width=\"100%\" cellpadding=\"3\" cellspacing=\"1\" border=\"0\" bgcolor=\"#d3d3d3\">";
     private static String endContent = "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"body-table\" bgcolor=\"#ffffff\" border=\"0\">";
     
-    private static String tickerPattern = ".*onclick=\\\"window\\.location='quote\\.ashx\\?t=([A-Z]{1,4}(\\.[A-Z]{1,4})?)&";
+    private static String uniqueContentIdentifier = "screener-link-primary\">";
+    private static String tickerPattern = ".*" + uniqueContentIdentifier + "([A-Z]{1,4}(\\.[A-Z]{1,4})?)<";
     private static String tickerCountPattern = ".*<b>Total: <\\/b>\\d+\\s";
     private static String tickerCountStartPattern = "<td width=\"140\" align=\"left\" valign=\"bottom\" class=\"count-text\">";
     private static String tickerCountEndPattern = "<td align=\"center\" valign=\"bottom\" class=\"fullview-links\">";
@@ -176,7 +177,7 @@ public class FinvizParser extends HTMLParser { //Finviz sold out... so now we ha
     }
     
     private static String extractTickerValue(String currentBlock){
-        String ticker = currentBlock.substring(currentBlock.lastIndexOf("=") + 1, currentBlock.length() - 1);
+        String ticker = currentBlock.substring(currentBlock.indexOf(uniqueContentIdentifier) + uniqueContentIdentifier.length(), currentBlock.length() - 1);
         
         return ticker;
     }
