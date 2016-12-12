@@ -148,20 +148,20 @@ public class UtilitySqlQueries {
     }
     public static List<Security> getSecuritiesByPortfolioId(Long portfolioId)
     {
-        List<Security> securities;
+        List<Security> securities = new ArrayList<>();
         
         List<Security> cachedSecurities = portfolioCache.get(portfolioId);
         // Try to get the List from the cache before using the DAOs
         if(cachedSecurities != null)
-        {
-            securities = new ArrayList<>();
             securities.addAll(cachedSecurities); // We need to make a copy as caller could mutate the object
-        }
         else
         {
             ProspectDAO pDao = new ProspectDAOHibernateImpl();
             List<Prospect> prospects = pDao.getProspectsByPortfolioId(portfolioId);
         
+            if(prospects.isEmpty())
+                return securities;
+            
             StringBuilder formattedTickerList = new StringBuilder("");
             for(Prospect p : prospects)
                 formattedTickerList.append("'").append(p.getSymbol()).append("',");
@@ -190,7 +190,11 @@ public class UtilitySqlQueries {
     
     public static List<Prospect> getProspectsFromSecurities(List<Security> securities, Long portfolioId)
     {
+        List<Prospect> prospects = new ArrayList<>();
         StringBuilder formattedTickerList = new StringBuilder("");
+        
+        if(securities.isEmpty())
+            return prospects;
         
         for(Security s : securities)
             formattedTickerList.append("'").append(s.getTicker()).append("',");
@@ -198,8 +202,8 @@ public class UtilitySqlQueries {
         String query = "From Prospect p where p.portfolioId = " + portfolioId.toString() + " AND p.symbol in ( " + formattedTickerList.deleteCharAt(formattedTickerList.length() - 1).toString() + " )";
         
         ProspectDAO dao = new ProspectDAOHibernateImpl();
-        List<Prospect> prospects = dao.retrieveProspectswithQuery(query);
- 
+        prospects = dao.retrieveProspectswithQuery(query);
+        
         return prospects;
     }
 }
