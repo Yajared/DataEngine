@@ -11,6 +11,7 @@ import com.dreamscape.dataengine.processes.PortfolioCreator;
 import com.dreamscape.dataengine.utils.UtilitySqlQueries;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class App 
 {
@@ -35,7 +36,7 @@ public class App
             {   
                 case "generateProspects":
                     FinvizDomainManager fdm = new FinvizDomainManager();
-                    Prospect[] prospects = fdm.generateRandomProspects();
+                    List<Prospect> prospects = fdm.generateRandomProspects();
                     ProspectDAO dao = new ProspectDAOHibernateImpl();
                     dao.createProspects(prospects);
                     break;

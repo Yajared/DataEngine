@@ -13,9 +13,9 @@ import com.dreamscape.dataengine.domain.managers.FinvizDomainManager.Feature.*;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -1759,20 +1759,20 @@ public class FinvizDomainManager {
     public FinvizDomainManager(){
         
     }
-    public Prospect[] generateProspects(FinvizDomainManager.Signal.SignalSelection signal, Enum... features){
+    public List<Prospect> generateProspects(FinvizDomainManager.Signal.SignalSelection signal, Enum... features){
         
         
-        ArrayList<String> prospectList = FinvizConnectionManager.getProspectList(signal,features);
+        List<Prospect> prospects = FinvizConnectionManager.getProspectList(signal,features);
         
-        if(prospectList.size() > 0)
-        {
-            Prospect[] prospects = convertToProspectArray(prospectList, signal, features);
+        //if(prospectList.size() > 0)
+        //{
+            //Prospect[] prospects = convertToProspectArray(prospectList, signal, features);
         
             return prospects;
-        }
-        return new Prospect[0];
+        //}
+        //return new Prospect[0];
     }
-    public Prospect[] generateRandomProspects(){
+    public List<Prospect> generateRandomProspects(){
         
         initializeSuffixMap();
         Random rand = new Random();
@@ -2059,7 +2059,7 @@ public class FinvizDomainManager {
         }
         
         Enum[] features = featureList.toArray(new Enum[featureList.size()]);
-        Prospect[] prospects = generateProspects(selectedSignal, features);
+        List<Prospect> prospects = generateProspects(selectedSignal, features);
         
         return prospects;
     }

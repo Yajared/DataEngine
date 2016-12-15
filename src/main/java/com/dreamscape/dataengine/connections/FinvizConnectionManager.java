@@ -6,6 +6,7 @@
 
 package com.dreamscape.dataengine.connections;
 
+import com.dreamscape.dataengine.domain.Prospect;
 import com.dreamscape.utillibrary.connections.Domain;
 import static com.dreamscape.dataengine.domain.managers.FinvizDomainManager.*;
 
@@ -21,14 +22,13 @@ import java.util.List;
 public class FinvizConnectionManager {
     private static final String BASE_EXPORT_URL = "http://www.finviz.com/screener.ashx?v=111&";
    
-    public static ArrayList<String> getProspectList(Signal.SignalSelection signal, Enum... features){
+    public static List<Prospect> getProspectList(Signal.SignalSelection signal, Enum... features){
         String urlSuffix = signalAndFeaturesToBlobString(true, signal, features);
         String completeURL = BASE_EXPORT_URL + urlSuffix;
         System.out.println("Exporting resource for URL Suffix: " + urlSuffix);
         String completeURLWithPagination = new String(completeURL);
         
-        ArrayList<String> singlePageProspectList = null;
-        ArrayList<String> prospectList = new ArrayList<>();
+        List<Prospect> prospectList = new ArrayList<>();
         
         int i = 1;
         int totalTickers = 0;
@@ -50,8 +50,7 @@ public class FinvizConnectionManager {
             
             if(totalTickers > 0)
             {
-                singlePageProspectList = fp.parseTickers(content);
-                prospectList.addAll(singlePageProspectList);
+                prospectList = fp.parseProspects(content);
             }
             else
                 System.out.println("No companies found with the following criteria: " + urlSuffix);

@@ -37,7 +37,7 @@ public class PortfolioDAOHibernateImpl implements PortfolioDAO{
                 session.close();
                 
                 ProspectDAO dao = new ProspectDAOHibernateImpl();
-                dao.createProspects(portfolio.getProspects().toArray(new Prospect[1]));
+                dao.createProspects(portfolio.getProspects());
             }
         }
         

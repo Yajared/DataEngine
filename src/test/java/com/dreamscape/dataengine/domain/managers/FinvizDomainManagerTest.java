@@ -7,11 +7,11 @@
 package com.dreamscape.dataengine.domain.managers;
 
 import com.dreamscape.dataengine.domain.Prospect;
+import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -41,20 +41,23 @@ public class FinvizDomainManagerTest {
     }
 
     @Test
-    public void generateRandomProspectsTest() {
-        FinvizDomainManager fdm = new FinvizDomainManager();
-        Prospect[] prospects = fdm.generateRandomProspects();
-        
-        if(prospects.length > 0)
-        {
-            System.out.println(prospects[0].getSignalAndFeatures());
-            int i = 0;
-            for(; i < prospects.length; i++){
-                System.out.println(prospects[i].getSymbol());
+    public void generateRandomProspects() {
+        List<Prospect> prospects;
+        do{
+            FinvizDomainManager fdm = new FinvizDomainManager();
+            prospects = fdm.generateRandomProspects();
+
+            if(prospects.size() > 0)
+            {
+                System.out.println(prospects.get(0).getSignalAndFeatures());
+                int i = 0;
+                for(Prospect prospect : prospects){
+                    System.out.println(prospect.getSymbol());
+                }
+                System.out.println("Number of Companies Found: " + i);
             }
-            System.out.println("Number of Companies Found: " + (i + 1));
-        }
-        else
-            System.out.println("No prospects were found with the randomly generated signal and features.");
+            else
+                System.out.println("No prospects were found with the randomly generated signal and features.");
+        } while (prospects.size() < 1);
     }
 }

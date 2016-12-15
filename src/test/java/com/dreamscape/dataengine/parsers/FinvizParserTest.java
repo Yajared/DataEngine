@@ -6,15 +6,16 @@
 
 package com.dreamscape.dataengine.parsers;
 
+import com.dreamscape.dataengine.domain.Prospect;
 import com.dreamscape.utillibrary.connections.Domain;
 import java.io.InputStream;
+import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -84,5 +85,24 @@ public class FinvizParserTest {
         int count = fp.parseTotalTickersCount(pageAsString);
         
         assertEquals(63, count);
+    }
+    
+    @Test
+    public void canParseTickerAndPrice()
+    {
+        InputStream is = getClass().getResourceAsStream("/FinvizExamplePage3.html");       
+        String pageAsString = Domain.convertInputStreamContentToBlobString(is);
+        
+        FinvizParser fp = new FinvizParser();
+        List<Prospect> prospects = fp.parseProspects(pageAsString);
+        System.out.println("Company\t\tPrice");
+        System.out.println("----------------------");
+        for(Prospect prospect : prospects){
+            assertNotNull(prospect.getSymbol());
+            System.out.print(prospect.getSymbol() + "\t\t");
+            assertNotNull(prospect.getPriceAtCreation());
+            System.out.print(prospect.getPriceAtCreation() + "\n");
+        }
+        assertEquals(20, prospects.size());
     }
 }

@@ -9,6 +9,7 @@ package com.dreamscape.dataengine.domain.dao;
 import com.dreamscape.dataengine.domain.Prospect;
 import com.dreamscape.dataengine.domain.managers.FinvizDomainManager;
 import java.io.IOException;
+import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -45,10 +46,10 @@ public class ProspectDAOTest {
     }
 
     @Ignore //Test is failing, may need to revisit
-    public void canInsertSecurityIntoDatabase() throws IOException{
+    public void canInsertProspectIntoDatabase() throws IOException{
        
        FinvizDomainManager fdm = new FinvizDomainManager();
-       Prospect[] prospects = fdm.generateRandomProspects();
+       List<Prospect> prospects = fdm.generateRandomProspects();
                        
        for (Prospect prospect : prospects)
        {

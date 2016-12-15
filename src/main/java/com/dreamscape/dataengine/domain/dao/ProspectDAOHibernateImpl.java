@@ -200,10 +200,10 @@ public class ProspectDAOHibernateImpl implements ProspectDAO{
     }
     
     @Override
-    public boolean createProspects(Prospect[] prospects)
+    public boolean createProspects(List<Prospect> prospects)
     {
         try{
-            if(prospects.length > 0)
+            if(prospects.size() > 0)
             {
                 //Formula formula = new Formula(prospects);
                 // Create formula
