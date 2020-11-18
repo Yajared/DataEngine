@@ -62,6 +62,9 @@ public class Prospect implements Serializable{
     Float perf60;
     Float perf120;
     Float perf240;
+    Float perf360;
+    Float perf540;
+    Float perf720;
     
     @Transient
     Float performanceForComparison;
@@ -86,7 +89,8 @@ public class Prospect implements Serializable{
             p.setSymbol(s.getTicker());
             p.setCreationDate(creationDate);
             
-            ArrayList<Double> pricesSinceCreation = EODPriceInformation.downloadHistoricalPrices(s.getTicker(), creationDate);
+            //TODO: FIX ME
+            ArrayList<Double> pricesSinceCreation = null;//EODPriceInformation.downloadHistoricalPrices(s.getTicker(), creationDate);
             if(pricesSinceCreation == null)
                 p.setPriceAtCreation(null);
             else
@@ -218,6 +222,30 @@ public class Prospect implements Serializable{
         return perf240;
     }
 
+    public Float getPerf360() {
+        return perf360;
+    }
+
+    public void setPerf360(Float perf360) {
+        this.perf360 = perf360;
+    }
+
+    public Float getPerf540() {
+        return perf540;
+    }
+
+    public void setPerf540(Float perf540) {
+        this.perf540 = perf540;
+    }
+
+    public Float getPerf720() {
+        return perf720;
+    }
+
+    public void setPerf720(Float perf720) {
+        this.perf720 = perf720;
+    }
+
     public void setPerf240(Float perf240) {
         this.perf240 = perf240;
     }
@@ -287,6 +315,21 @@ public class Prospect implements Serializable{
                     case Perf240:
                     {
                         performance = this.getPerf240();
+                        break;
+                    }
+                    case Perf360:
+                    {
+                        performance = this.getPerf360();
+                        break;
+                    }
+                    case Perf540:
+                    {
+                        performance = this.getPerf540();
+                        break;
+                    }
+                    case Perf720:
+                    {
+                        performance = this.getPerf720();
                         break;
                     }
                 }
@@ -392,7 +435,25 @@ public class Prospect implements Serializable{
                 for(Prospect p : prospects)
                     p.setPerformanceForComparison(p.getPerf240());
                 break;
-            } 
+            }
+            case Perf360:
+            {
+                for(Prospect p : prospects)
+                    p.setPerformanceForComparison(p.getPerf360());
+                break;
+            }
+            case Perf540:
+            {
+                for(Prospect p : prospects)
+                    p.setPerformanceForComparison(p.getPerf540());
+                break;
+            }
+            case Perf720:
+            {
+                for(Prospect p : prospects)
+                    p.setPerformanceForComparison(p.getPerf720());
+                break;
+            }
         }
     }
 }

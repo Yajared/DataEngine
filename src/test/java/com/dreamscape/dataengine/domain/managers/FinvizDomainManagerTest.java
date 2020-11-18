@@ -12,7 +12,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.Ignore;
 
 
 /**
@@ -40,7 +40,7 @@ public class FinvizDomainManagerTest {
     public void tearDown() {
     }
 
-    @Test
+    @Ignore
     public void generateRandomProspects() {
         List<Prospect> prospects;
         do{

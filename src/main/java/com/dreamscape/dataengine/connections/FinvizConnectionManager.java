@@ -22,12 +22,14 @@ import java.util.List;
 public class FinvizConnectionManager {
     private static final String BASE_EXPORT_URL = "http://www.finviz.com/screener.ashx?v=111&";
    
-    public static List<Prospect> getProspectList(Signal.SignalSelection signal, Enum... features){
+    public static List<Prospect> getProspectListFromCriteria(Signal.SignalSelection signal, Enum... features){
         String urlSuffix = signalAndFeaturesToBlobString(true, signal, features);
         String completeURL = BASE_EXPORT_URL + urlSuffix;
         System.out.println("Exporting resource for URL Suffix: " + urlSuffix);
-        String completeURLWithPagination = new String(completeURL);
         
+        return getProspectListFromUrl(completeURL);
+    }
+    public static List<Prospect> getProspectListFromUrl(String fullUrl) {
         List<Prospect> prospectList = new ArrayList<>();
         
         int i = 1;
@@ -36,8 +38,9 @@ public class FinvizConnectionManager {
         { 
             FinvizParser fp = new FinvizParser();
 
+            String completeURLWithPagination = new String(fullUrl);
             if(i > 1)
-                completeURLWithPagination = completeURL + "&r=" + String.valueOf(20*(i - 1) + 1);
+                completeURLWithPagination = fullUrl + "&r=" + String.valueOf(20*(i - 1) + 1);
                 
             Domain domain = new Domain(completeURLWithPagination);
             InputStream is = domain.getPageContentAsInputStream();
@@ -50,10 +53,10 @@ public class FinvizConnectionManager {
             
             if(totalTickers > 0)
             {
-                prospectList = fp.parseProspects(content);
+                prospectList.addAll(fp.parseProspects(content));
             }
             else
-                System.out.println("No companies found with the following criteria: " + urlSuffix);
+                System.out.println("No companies found with the following criteria: " + fullUrl);
         } while(totalTickers > (20 * i++));
         
         return prospectList;

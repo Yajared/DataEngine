@@ -173,6 +173,12 @@ public class ProspectDAOHibernateImpl implements ProspectDAO{
                 updateQuery.append(" p.perf120 = '"+ prospect.getPerf120() + "',");
             if(prospect.getPerf240() != null && prospect.getUpdateFlags().get("Perf240") != null)
                 updateQuery.append(" p.perf240 = '"+ prospect.getPerf240() + "'");
+            if(prospect.getPerf360() != null && prospect.getUpdateFlags().get("Perf360") != null)
+                updateQuery.append(" p.perf360 = '"+ prospect.getPerf360() + "'");
+            if(prospect.getPerf540() != null && prospect.getUpdateFlags().get("Perf540") != null)
+                updateQuery.append(" p.perf540 = '"+ prospect.getPerf240() + "'");
+            if(prospect.getPerf720() != null && prospect.getUpdateFlags().get("Perf720") != null)
+                updateQuery.append(" p.perf720 = '"+ prospect.getPerf720() + "'");
 
             if(updateQuery.charAt(updateQuery.length() - 1) == ',')
                 updateQuery.deleteCharAt(updateQuery.length() - 1);

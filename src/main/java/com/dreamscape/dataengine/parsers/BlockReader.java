@@ -52,15 +52,15 @@ public class BlockReader {
             return content.substring(start);
         }
         catch(StringIndexOutOfBoundsException e){
-            System.out.println("The following content could not be located in the Text supplied: " + startContent);
-            System.out.println("Unable to trim content using this token, please configure with a different token.");
+            System.err.println("The following content could not be located in the Text supplied: " + startContent);
+            System.err.println("Unable to trim content using this token, please configure with a different token.");
             if(throwExceptionIfStartContentMissing)
             {
-                System.out.println("Assuming there is no valid content to parse. Returning blank content.");
+                System.err.println("Assuming there is no valid content to parse. Returning blank content.");
                 throw new PageDoesNotExistException();
             }
             else
-                System.out.println("Returning content untrimmed. Configure with another token for better performance.");
+                System.err.println("Returning content untrimmed. Configure with another token for better performance.");
                 return content;
         }
     }

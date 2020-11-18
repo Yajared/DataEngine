@@ -1762,7 +1762,7 @@ public class FinvizDomainManager {
     public List<Prospect> generateProspects(FinvizDomainManager.Signal.SignalSelection signal, Enum... features){
         
         
-        List<Prospect> prospects = FinvizConnectionManager.getProspectList(signal,features);
+        List<Prospect> prospects = FinvizConnectionManager.getProspectListFromCriteria(signal,features);
         
         //if(prospectList.size() > 0)
         //{

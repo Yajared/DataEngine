@@ -27,5 +27,8 @@ public class ProspectTest {
         assertTrue(Prospect.validateTimeFrame(PerformanceTimeFrame.Perf60));
         assertTrue(Prospect.validateTimeFrame(PerformanceTimeFrame.Perf120));
         assertTrue(Prospect.validateTimeFrame(PerformanceTimeFrame.Perf240));
+        assertTrue(Prospect.validateTimeFrame(PerformanceTimeFrame.Perf360));
+        assertTrue(Prospect.validateTimeFrame(PerformanceTimeFrame.Perf540));
+        assertTrue(Prospect.validateTimeFrame(PerformanceTimeFrame.Perf720));
     }
 }

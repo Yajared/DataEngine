@@ -1,5 +1,0 @@
-SELECT COUNT(*) FROM _security;
-
-SELECT * FROM _security WHERE evtoebitda < 7 AND evtoebitda > 0  AND ebitda > 0  AND priceBook < 3 AND operatingCashFlow > 0 AND returnOnEquity > .1 AND percentHeldByInstitutions > .1 AND profitMargin > .05 AND returnOnAssets > .05 AND totalDebtToEquity < 50 ORDER BY evtoebitda;
-
-SELECT ticker, (enterpriseValue/1000000), magicFormulaRatio, EVtoEBITDA, returnOnIC, returnOnEquity, totalDebtToEquity, (totalCash/totalDebt), (revenue / 1000000), (ebitda / 1000000), fiftyTwoWeekChange, fiftyDayMovingAvg, (marketCap/1000000) FROM _security WHERE evtoebitda < 7 AND evtoebitda > 0  AND ebitda > 0  AND priceBook < 3 AND operatingCashFlow > 0 AND returnOnEquity > .1 AND percentHeldByInstitutions > .1 AND profitMargin > .05 AND returnOnAssets > .05 AND totalDebtToEquity < 50 ORDER BY magicFormulaRatio DESC;

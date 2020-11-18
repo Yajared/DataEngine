@@ -45,67 +45,67 @@ public class YahooKeyStatisticsParser extends HTMLParser {
         try {
         
         
-	SAXParserFactory factory = SAXParserFactory.newInstance();
-	SAXParser saxParser = factory.newSAXParser();
- 
-	DefaultHandler handler = new DefaultHandler() {
- 
-        boolean bname = false;
-	boolean bpattern = false;
-        boolean btype = false;
-        
-        String key;
-        String type;
-        String pattern;
-        
-        StringBuilder buf = new StringBuilder();
-        
- 
-        @Override
-	public void startElement(String uri, String localName,String qName, 
-                Attributes attributes) {
- 
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            SAXParser saxParser = factory.newSAXParser();
+
+            DefaultHandler handler = new DefaultHandler() {
+
+            boolean bname = false;
+            boolean bpattern = false;
+            boolean btype = false;
+
+            String key;
+            String type;
+            String pattern;
+
+            StringBuilder buf = new StringBuilder();
+
+
+            @Override
+            public void startElement(String uri, String localName,String qName, 
+                    Attributes attributes) {
+
+                    if (qName.equalsIgnoreCase("ELEMENT")) {
+                        key = attributes.getValue("id");
+                        sourceMetrics.put(key, null);
+                    }
+
+                    else if (qName.equalsIgnoreCase("PATTERN")) {                     
+                            bpattern = true;
+                    }
+                    else if (qName.equalsIgnoreCase("TYPE")){
+                            btype = true;
+                    }
+
+
+            }
+
+            @Override
+            public void endElement(String uri, String localName,
+                    String qName) throws SAXException {
+
                 if (qName.equalsIgnoreCase("ELEMENT")) {
-                    key = attributes.getValue("id");
-                    sourceMetrics.put(key, null);
-		}
- 
-                else if (qName.equalsIgnoreCase("PATTERN")) {                     
-			bpattern = true;
-		}
-                else if (qName.equalsIgnoreCase("TYPE")){
-                        btype = true;
+                        sourceMetrics.put(key, new Metric(type, Pattern.compile(generateRegEx(type, pattern)), pattern));
+                    }
+            }
+
+            @Override
+            public void characters(char ch[], int start, int length) throws SAXException {
+
+                if (bpattern) {
+                        pattern = new String(ch, start, length);
+                        //System.out.println("Pattern : " + pattern);
+                        bpattern = false;
                 }
-
- 
-	}
- 
-        @Override
-	public void endElement(String uri, String localName,
-		String qName) throws SAXException {
- 
-            if (qName.equalsIgnoreCase("ELEMENT")) {
-                    sourceMetrics.put(key, new Metric(type, Pattern.compile(generateRegEx(type, pattern)), pattern));
-		}
-	}
- 
-        @Override
-	public void characters(char ch[], int start, int length) throws SAXException {
-
-            if (bpattern) {
-                    pattern = new String(ch, start, length);
-                    //System.out.println("Pattern : " + pattern);
-                    bpattern = false;
+                if (btype){
+                    type = new String(ch, start, length);
+                    //System.out.println("Type: " + type);
+                    btype = false;
+                }
             }
-            if (btype){
-                type = new String(ch, start, length);
-                //System.out.println("Type: " + type);
-                btype = false;
-            }
-        }
-     };
- 
-       saxParser.parse(patternConfiguration, handler);
+         };
+
+         saxParser.parse(patternConfiguration, handler);
  
      } 
      catch (ParserConfigurationException | SAXException e) 

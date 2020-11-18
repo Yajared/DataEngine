@@ -10,5 +10,5 @@ package com.dreamscape.dataengine.utils;
  * @author Jared
  */
 public enum PerformanceTimeFrame {
-    Perf3, Perf5, Perf10, Perf20, Perf30, Perf40, Perf60, Perf120, Perf240
+    Perf3, Perf5, Perf10, Perf20, Perf30, Perf40, Perf60, Perf120, Perf240, Perf360, Perf540, Perf720
 }

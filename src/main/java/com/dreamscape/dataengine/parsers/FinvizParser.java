@@ -205,7 +205,12 @@ public class FinvizParser extends HTMLParser { //Finviz sold out... so now we ha
         // Now we search for the price
         while(!priceFound && i < searchSpan)
         {
-            currentBlock = (textToSearch.substring(beginningIndex, i));
+            try {
+                currentBlock = (textToSearch.substring(beginningIndex, i));
+            }
+            catch(Exception e) {
+                System.err.println("Died on search text: " + textToSearch + " with beginning index: " + beginningIndex + " and ending index: " + i);
+            }
             matcher = pricePattern.matcher(currentBlock);
 
             //System.out.println(currentBlock);

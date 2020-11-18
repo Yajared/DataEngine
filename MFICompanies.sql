@@ -1,1 +1,0 @@
-SELECT ticker, magicFormulaRatio, returnOnIC, EVtoEBITDA, EVtoRevenue, priceBook, priceSales, totalDebtToEquity, returnOnEquity, marketCap FROM _security WHERE returnOnIC IS NOT NULL AND totalDebtToEquity < 50 AND returnOnEquity > .05 AND EVtoEBITDA < 12 ORDER BY magicFormulaRatio DESC;
